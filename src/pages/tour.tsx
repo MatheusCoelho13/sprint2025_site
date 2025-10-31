@@ -1,6 +1,8 @@
  
 import React from "react";
+import { injectSpeedInsights } from '@vercel/speed-insights';
 
+   injectSpeedInsights();
 export default function Tour() {
     return (
         <iframe

@@ -10,7 +10,9 @@ import { Footer } from "./components/footer";
 import { Globe, Users, Zap } from "lucide-react";
 import { Link, Route, Routes } from "react-router-dom";
 import Tour from "./pages/tour";
+import { injectSpeedInsights } from '@vercel/speed-insights';
 
+   injectSpeedInsights();
 function Home() {
   const features: Feature[] = [
     {
@@ -44,6 +46,7 @@ function Home() {
 
   return (
     <>
+ 
       <AnimatedTechBackground />
 
       <div className="relative w-full h-full flex flex-col items-center justify-center overflow-hidden">
