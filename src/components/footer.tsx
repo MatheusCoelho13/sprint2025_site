@@ -11,7 +11,7 @@ export const Footer: React.FC = () => {
       </div>
         <p className="text-[#a7b1b9] text-sm max-w-md mx-auto leading-relaxed">
           © 2025 Biotic. Todos os direitos reservados.  
-          Feito com <span className="text-[#e8b443]">❤️</span> para exploradores de novas realidades.
+          Feito com <span className="text-[#e8b443]">Matheus C, Pietro, Maximus</span> para exploradores de novas realidades.
         </p>
       </div>
     </footer>

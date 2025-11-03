@@ -8,17 +8,34 @@ import { Cards, Feature } from "./components/cards";
 import Sections1 from "./components/section-prefinal";
 import { Footer } from "./components/footer";
 import { Globe, Users, Zap } from "lucide-react";
-import { Link, Route, Routes } from "react-router-dom";
+import { Link, Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import Tour from "./pages/tour";
-import { injectSpeedInsights } from '@vercel/speed-insights';
+import React from 'react';
 
-   injectSpeedInsights();
+/**
+ * 🔁 Força uma barra final ("/") nas URLs — ex: "/tour" → "/tour/"
+ */
+function ForceTrailingSlash(): null {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const isFile = /\.[a-zA-Z0-9]+$/.test(location.pathname);
+    if (!location.pathname.endsWith("/") && !isFile) {
+      navigate(location.pathname + "/", { replace: true });
+    }
+  }, [location.pathname, navigate]);
+
+  return null;
+}
+
 function Home() {
   const features: Feature[] = [
     {
       icon: Globe,
-      title: "Mundos Infinitos",
-      description: "Explore universos virtuais sem limites",
+      title: "Conheça o Parque Tecnológico Biotic",
+      description: "Explore a Biotic sem sair da sua casa",
       bgColor: "bg-gradient-to-br from-[#3b7d46]/20 to-[#174f28]/20",
       borderColor: "border-[#3b7d46]/50",
       iconBg: "from-[#3b7d46] to-[#174f28]",
@@ -35,8 +52,8 @@ function Home() {
     },
     {
       icon: Zap,
-      title: "Ação Instantânea",
-      description: "Mergulhe em segundos na aventura",
+      title: "Conheça o futuro da tecnologia do DF",
+      description: "Entre no universo tecnológico que está transformando o Distrito Federal.",
       bgColor: "bg-gradient-to-br from-[#1a5a7e]/20 to-[#0a3d5a]/20",
       borderColor: "border-[#1a5a7e]/50",
       iconBg: "from-[#1a5a7e] to-[#0a3d5a]",
@@ -46,7 +63,6 @@ function Home() {
 
   return (
     <>
- 
       <AnimatedTechBackground />
 
       <div className="relative w-full h-full flex flex-col items-center justify-center overflow-hidden">
@@ -63,35 +79,26 @@ function Home() {
                   Biotic
                 </Link>
               </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-              >
-                
-                 
-              </motion.div>
             </div>
           </header>
 
           {/* Conteúdo principal */}
           <div className="relative z-10 text-center text-white px-6 pt-28">
-           <div className="pt-32"></div>
+            <div className="pt-32"></div>
             <Title />
-            <div className="pt-4"></div>
+            <div className="pt-16"></div>
             <SubTitle />
-                  <div className="pt-4"></div>
-                  {/*   Transformamos ideias complexas em soluções digitais inovadoras com
-              design e performance */}
-                  {/* */}
+            <div className="pt-10"></div>
+
             <p className="text-lg mb-8 max-w-2xl mx-auto">
-            Um tour virtual que transforma curiosidade em aventura épica 
+              Um tour virtual que transforma curiosidade em aventura épica
             </p>
+
             <Link
-                  to="/tour"
-                  className="text-white hover:text-[#3b7d46] transition"
-                >
-            <Buttons />
+              to="/tour/"
+              className="text-white hover:text-[#3b7d46] transition"
+            >
+              <Buttons />
             </Link>
           </div>
 
@@ -133,10 +140,20 @@ function Home() {
 
 export default function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/tour" element={<Tour />} />
-      <Route path="*" element={<h1 className="text-white text-center mt-20">404 - Página não encontrada</h1>} />
-    </Routes>
+    <>
+      <ForceTrailingSlash />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/tour/" element={<Tour />} />
+        <Route
+          path="*"
+          element={
+            <h1 className="text-white text-center mt-20">
+              404 - Página não encontrada
+            </h1>
+          }
+        />
+      </Routes>
+    </>
   );
 }

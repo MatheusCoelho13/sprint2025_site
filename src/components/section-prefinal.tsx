@@ -1,7 +1,7 @@
 import React from "react"
 import { ArrowRight,  Sparkles, } from "lucide-react";
 import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
+import Buttons from "../components/Button";
 const Sections1: React.FC = () => {
 
 
@@ -22,15 +22,7 @@ return(
                 Entre em um mundo onde a imaginação não tem limites e cada experiência é única
               </p>
 
-              <Button 
-                size="lg"
-                className="bg-gradient-to-r from-[#e8b443] via-[#3b7d46] to-[#1a5a7e] hover:opacity-90 text-[#eff5f5] font-bold text-xl px-12 py-8 rounded-2xl shadow-2xl shadow-[#e8b443]/40 transform hover:scale-105 transition-all duration-300 group"
-              >
-                <Sparkles className="w-6 h-6 mr-3 group-hover:rotate-12 transition-transform" />
-                Explorar Agora
-                <ArrowRight className="w-6 h-6 ml-3 group-hover:translate-x-2 transition-transform" />
-              </Button>
-
+              
               
             </motion.div>
           </div>
