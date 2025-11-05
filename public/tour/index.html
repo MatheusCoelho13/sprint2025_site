@@ -11,6 +11,31 @@
 <body class="multiple-scenes view-control-buttons">
 
 <div id="pano"></div>
+<script>
+function enableGyroscope() {
+  if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+    // iOS / Meta Quest (necessita permissão explícita)
+    DeviceOrientationEvent.requestPermission()
+      .then(response => {
+        if (response === 'granted') {
+          window.addEventListener('deviceorientation', handleOrientation);
+          alert("✅ Giroscópio ativado com sucesso!");
+        } else {
+          alert("❌ Permissão negada para o giroscópio.");
+        }
+      })
+      .catch(console.error);
+  } else {
+    // Android / navegadores que não exigem permissão
+    window.addEventListener('deviceorientation', handleOrientation);
+  }
+}
+
+// Chama ao clicar em um botão, ou logo ao carregar:
+window.addEventListener('load', () => {
+  enableGyroscope();
+});
+</script>
 
 <div id="sceneList">
   <ul class="scenes">
