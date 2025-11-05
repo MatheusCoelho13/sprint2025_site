@@ -12,6 +12,13 @@
 
 <div id="pano"></div>
 <script>
+// Handler global para eventos de orientação do dispositivo.
+// Defined here to avoid ReferenceError when other scripts add/remove the listener.
+function handleOrientation(e) {
+  // Salva o último evento para depuração/uso futuro por outros scripts.
+  window.__lastDeviceOrientation = e;
+}
+
 function enableGyroscope() {
   if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
     // iOS / Meta Quest (necessita permissão explícita)
