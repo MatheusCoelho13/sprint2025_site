@@ -76,8 +76,8 @@ function Home() {
                 animate={{ opacity: 1, x: 0 }}
               >
                 <Link to="/" className="text-white text-xl font-bold">
-                  Biotic
-                </Link>
+              {/* TODO: Adicionar logo aqui  */}
+               </Link>
               </motion.div>
             </div>
           </header>
@@ -145,14 +145,14 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/tour/" element={<Tour />} />
-        <Route
+        {/* <Route
           path="*"
           element={
             <h1 className="text-white text-center mt-20">
               404 - Página não encontrada
             </h1>
           }
-        />
+        /> */}
       </Routes>
     </>
   );

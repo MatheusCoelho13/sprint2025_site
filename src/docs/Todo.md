@@ -11,13 +11,13 @@ Legenda:
 ## 🔥 ALTA PRIORIDADE
 
 ### 🟩 T1 — Tela Inicial (“BIOTIC / Iniciar Tour Virtual”)
-- [ ] 💫 Adicionar **animação no fundo binário** (scroll, parallax ou flutuação).  
-- [ ] 🧭 Criar **menu fixo transparente com blur** e links (“Sobre”, “Tour”, “Contato”).  
+- [ ok] 💫 Adicionar **animação no fundo binário** (scroll, parallax ou flutuação).  
+- [ok ] 🧭 Criar **menu fixo transparente com blur** e links (“Sobre”, “Tour”, “Contato”).  
 - [ ] 🪞 Inserir **logo animado** (símbolo da Biotic, átomo, esfera ou partícula).  
 
 ### 🟦 T2 — Tela de Destaque (“Sua Próxima Aventura Começa Aqui”)
 - [ ] ⚡ Adicionar **animação de entrada** no título e subtítulo (fade-in + scale).  
-- [ ] 🌟 Criar **hover animado** no botão “Explorar Agora” (glow + scale 1.05).  
+- [none] 🌟 Criar **hover animado** no botão “Explorar Agora” (glow + scale 1.05).  
 - [ ] 🎨 Aumentar **contraste** do subtítulo e do texto no rodapé.  
 
 ### 🟨 T3 — Tela Intermediária (“Por Que Biotic é Especial?”)
