@@ -39,8 +39,16 @@ function enableGyroscope() {
 }
 
 // Chama ao clicar em um botão, ou logo ao carregar:
+// Ativa o giroscópio automaticamente APENAS em desktops (para testes).
+// Não ativa automaticamente em celulares; assim o botão/não aparece em mobile.
 window.addEventListener('load', () => {
-  enableGyroscope();
+  var isMobile = /Mobi|Android|iPhone|iPad|iPod/.test(navigator.userAgent);
+  if (!isMobile) {
+    console.log('Desktop detectado — ativando giroscópio para testes');
+    enableGyroscope();
+  } else {
+    console.log('Mobile detectado — não ativando giroscópio automaticamente');
+  }
 });
 </script>
 
