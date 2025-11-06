@@ -1,6 +1,5 @@
 /*
  * Marzipano VR Viewer - Compatível com Giroscópio (Android, iOS e Meta Quest)
- * Corrigido por Matheus Coelho & ChatGPT
  */
 'use strict';
 
@@ -13,29 +12,55 @@
   // ======== ELEMENTOS DOM ========
   var panoElement = document.querySelector('#pano');
   var sceneNameElement = document.querySelector('#titleBar .sceneName');
-  var sceneElements = document.querySelectorAll('#sceneList .scene');
   var sceneListElement = document.querySelector('#sceneList');
+  var sceneElements = document.querySelectorAll('#sceneList .scene');
   var sceneListToggleElement = document.querySelector('#sceneListToggle');
   var autorotateToggleElement = document.querySelector('#autorotateToggle');
   var fullscreenToggleElement = document.querySelector('#fullscreenToggle');
 
   // ======== VIEWER ========
-  var viewerOpts = { controls: { mouseViewMode: data.settings.mouseViewMode } };
+  var viewerOpts = {
+    controls: { mouseViewMode: data.settings.mouseViewMode }
+  };
   var viewer = new Marzipano.Viewer(panoElement, viewerOpts);
   var controls = viewer.controls();
 
-  // ======== FUNÇÕES BASE ========
-  function sanitize(s) {
-    return s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;');
+  // ======== DETECÇÃO DESKTOP / MOBILE ========
+  if (window.matchMedia) {
+    var mql = matchMedia('(max-width: 500px), (max-height: 500px)');
+    var setMode = function () {
+      if (mql.matches) {
+        document.body.classList.remove('desktop');
+        document.body.classList.add('mobile');
+      } else {
+        document.body.classList.remove('mobile');
+        document.body.classList.add('desktop');
+      }
+    };
+    setMode();
+    mql.addListener(setMode);
+  } else {
+    document.body.classList.add('desktop');
   }
 
-  function switchScene(scene) {
-    stopAutorotate();
-    scene.view.setParameters(scene.data.initialViewParameters);
-    scene.scene.switchTo();
-    startAutorotate();
-    updateSceneName(scene);
-    updateSceneList(scene);
+  // Touch
+  document.body.classList.add('no-touch');
+  window.addEventListener('touchstart', function () {
+    document.body.classList.remove('no-touch');
+    document.body.classList.add('touch');
+  });
+
+  // IE velho
+  if (bowser.msie && parseFloat(bowser.version) < 11) {
+    document.body.classList.add('tooltip-fallback');
+  }
+
+  // ======== FUNÇÕES BASE ========
+  function sanitize(s) {
+    return s
+      .replace('&', '&amp;')
+      .replace('<', '&lt;')
+      .replace('>', '&gt;');
   }
 
   function updateSceneName(scene) {
@@ -53,7 +78,45 @@
     }
   }
 
-  // ======== HOTSPOTS ========
+  function switchScene(scene) {
+    stopAutorotate();
+    scene.view.setParameters(scene.data.initialViewParameters);
+    scene.scene.switchTo();
+    startAutorotate();
+    updateSceneName(scene);
+    updateSceneList(scene);
+  }
+
+  function stopTouchAndScrollEventPropagation(element) {
+    var eventList = [
+      'touchstart', 'touchmove', 'touchend', 'touchcancel',
+      'wheel', 'mousewheel'
+    ];
+    for (var i = 0; i < eventList.length; i++) {
+      element.addEventListener(eventList[i], function (event) {
+        event.stopPropagation();
+      });
+    }
+  }
+
+  function findSceneById(id) {
+    for (var i = 0; i < scenes.length; i++) {
+      if (scenes[i].data.id === id) {
+        return scenes[i];
+      }
+    }
+    return null;
+  }
+
+  function findSceneDataById(id) {
+    for (var i = 0; i < data.scenes.length; i++) {
+      if (data.scenes[i].id === id) {
+        return data.scenes[i];
+      }
+    }
+    return null;
+  }
+
   function createLinkHotspotElement(hotspot) {
     var wrapper = document.createElement('div');
     wrapper.classList.add('hotspot', 'link-hotspot');
@@ -61,16 +124,24 @@
     var icon = document.createElement('img');
     icon.src = 'img/link.png';
     icon.classList.add('link-hotspot-icon');
-    icon.style.transform = 'rotate(' + hotspot.rotation + 'rad)';
-    wrapper.appendChild(icon);
+
+    var transformProperties = ['-ms-transform', '-webkit-transform', 'transform'];
+    for (var i = 0; i < transformProperties.length; i++) {
+      var property = transformProperties[i];
+      icon.style[property] = 'rotate(' + hotspot.rotation + 'rad)';
+    }
 
     wrapper.addEventListener('click', function () {
       switchScene(findSceneById(hotspot.target));
     });
 
+    stopTouchAndScrollEventPropagation(wrapper);
+
     var tooltip = document.createElement('div');
     tooltip.classList.add('hotspot-tooltip', 'link-hotspot-tooltip');
     tooltip.innerHTML = findSceneDataById(hotspot.target).name;
+
+    wrapper.appendChild(icon);
     wrapper.appendChild(tooltip);
 
     return wrapper;
@@ -83,82 +154,111 @@
     var header = document.createElement('div');
     header.classList.add('info-hotspot-header');
 
+    var iconWrapper = document.createElement('div');
+    iconWrapper.classList.add('info-hotspot-icon-wrapper');
     var icon = document.createElement('img');
     icon.src = 'img/info.png';
     icon.classList.add('info-hotspot-icon');
-    header.appendChild(icon);
+    iconWrapper.appendChild(icon);
 
+    var titleWrapper = document.createElement('div');
+    titleWrapper.classList.add('info-hotspot-title-wrapper');
     var title = document.createElement('div');
     title.classList.add('info-hotspot-title');
     title.innerHTML = hotspot.title;
-    header.appendChild(title);
-    wrapper.appendChild(header);
+    titleWrapper.appendChild(title);
+
+    var closeWrapper = document.createElement('div');
+    closeWrapper.classList.add('info-hotspot-close-wrapper');
+    var closeIcon = document.createElement('img');
+    closeIcon.src = 'img/close.png';
+    closeIcon.classList.add('info-hotspot-close-icon');
+    closeWrapper.appendChild(closeIcon);
+
+    header.appendChild(iconWrapper);
+    header.appendChild(titleWrapper);
+    header.appendChild(closeWrapper);
 
     var text = document.createElement('div');
     text.classList.add('info-hotspot-text');
     text.innerHTML = hotspot.text;
+
+    wrapper.appendChild(header);
     wrapper.appendChild(text);
+
+    var modal = document.createElement('div');
+    modal.innerHTML = wrapper.innerHTML;
+    modal.classList.add('info-hotspot-modal');
+    document.body.appendChild(modal);
+
+    var toggle = function () {
+      wrapper.classList.toggle('visible');
+      modal.classList.toggle('visible');
+    };
+
+    wrapper
+      .querySelector('.info-hotspot-header')
+      .addEventListener('click', toggle);
+    modal
+      .querySelector('.info-hotspot-close-wrapper')
+      .addEventListener('click', toggle);
+
+    stopTouchAndScrollEventPropagation(wrapper);
 
     return wrapper;
   }
 
-  function findSceneById(id) {
-    return scenes.find((s) => s.data.id === id) || null;
-  }
-
-  function findSceneDataById(id) {
-    return data.scenes.find((s) => s.id === id) || null;
-  }
-
   // ======== CRIAÇÃO DAS CENAS ========
-  var scenes = data.scenes.map(function (data) {
+  var scenes = data.scenes.map(function (dataScene) {
     var urlPrefix = 'tiles';
     var source = Marzipano.ImageUrlSource.fromString(
-      urlPrefix + '/' + data.id + '/{z}/{f}/{y}/{x}.jpg',
-      { cubeMapPreviewUrl: urlPrefix + '/' + data.id + '/preview.jpg' }
+      urlPrefix + '/' + dataScene.id + '/{z}/{f}/{y}/{x}.jpg',
+      { cubeMapPreviewUrl: urlPrefix + '/' + dataScene.id + '/preview.jpg' }
     );
 
-    var geometry = new Marzipano.CubeGeometry(data.levels);
+    var geometry = new Marzipano.CubeGeometry(dataScene.levels);
     var limiter = Marzipano.RectilinearView.limit.traditional(
-      data.faceSize, (100 * Math.PI) / 180, (120 * Math.PI) / 180
+      dataScene.faceSize,
+      100 * Math.PI / 180,
+      120 * Math.PI / 180
     );
-    var view = new Marzipano.RectilinearView(data.initialViewParameters, limiter);
+    var view = new Marzipano.RectilinearView(dataScene.initialViewParameters, limiter);
 
     var scene = viewer.createScene({
       source: source,
       geometry: geometry,
       view: view,
-      pinFirstLevel: true,
+      pinFirstLevel: true
     });
 
-    if (Array.isArray(data.linkHotspots)) {
-      data.linkHotspots.forEach(function (hotspot) {
-        var element = createLinkHotspotElement(hotspot);
-        scene.hotspotContainer().createHotspot(element, {
-          yaw: hotspot.yaw,
-          pitch: hotspot.pitch,
-        });
+    dataScene.linkHotspots.forEach(function (hotspot) {
+      var element = createLinkHotspotElement(hotspot);
+      scene.hotspotContainer().createHotspot(element, {
+        yaw: hotspot.yaw,
+        pitch: hotspot.pitch
       });
-    }
+    });
 
-    if (Array.isArray(data.infoHotspots)) {
-      data.infoHotspots.forEach(function (hotspot) {
-        var element = createInfoHotspotElement(hotspot);
-        scene.hotspotContainer().createHotspot(element, {
-          yaw: hotspot.yaw,
-          pitch: hotspot.pitch,
-        });
+    dataScene.infoHotspots.forEach(function (hotspot) {
+      var element = createInfoHotspotElement(hotspot);
+      scene.hotspotContainer().createHotspot(element, {
+        yaw: hotspot.yaw,
+        pitch: hotspot.pitch
       });
-    }
+    });
 
-    return { data: data, scene: scene, view: view };
+    return {
+      data: dataScene,
+      scene: scene,
+      view: view
+    };
   });
 
   // ======== AUTOROTAÇÃO ========
   var autorotate = Marzipano.autorotate({
     yawSpeed: 0.03,
     targetPitch: 0,
-    targetFov: Math.PI / 2,
+    targetFov: Math.PI / 2
   });
 
   function startAutorotate() {
@@ -173,107 +273,166 @@
   }
 
   function toggleAutorotate() {
-    autorotateToggleElement.classList.toggle('enabled');
-    if (autorotateToggleElement.classList.contains('enabled')) startAutorotate();
-    else stopAutorotate();
+    if (autorotateToggleElement.classList.contains('enabled')) {
+      autorotateToggleElement.classList.remove('enabled');
+      stopAutorotate();
+    } else {
+      autorotateToggleElement.classList.add('enabled');
+      startAutorotate();
+    }
   }
 
   autorotateToggleElement.addEventListener('click', toggleAutorotate);
 
   // ======== FULLSCREEN ========
   if (screenfull.enabled && data.settings.fullscreenButton) {
+    document.body.classList.add('fullscreen-enabled');
     fullscreenToggleElement.addEventListener('click', function () {
       screenfull.toggle();
     });
     screenfull.on('change', function () {
-      fullscreenToggleElement.classList.toggle('enabled', screenfull.isFullscreen);
+      if (screenfull.isFullscreen) {
+        fullscreenToggleElement.classList.add('enabled');
+      } else {
+        fullscreenToggleElement.classList.remove('enabled');
+      }
     });
+  } else {
+    document.body.classList.add('fullscreen-disabled');
   }
 
-  // ======== GIROSCÓPIO UNIVERSAL ========
+  // ======== LISTA DE CENAS ========
+  function showSceneList() {
+    sceneListElement.classList.add('enabled');
+    sceneListToggleElement.classList.add('enabled');
+  }
+
+  function hideSceneList() {
+    sceneListElement.classList.remove('enabled');
+    sceneListToggleElement.classList.remove('enabled');
+  }
+
+  function toggleSceneList() {
+    sceneListElement.classList.toggle('enabled');
+    sceneListToggleElement.classList.toggle('enabled');
+  }
+
+  sceneListToggleElement.addEventListener('click', toggleSceneList);
+
+  if (!document.body.classList.contains('mobile')) {
+    showSceneList();
+  }
+
+  scenes.forEach(function (scene) {
+    var el = document.querySelector(
+      '#sceneList .scene[data-id="' + scene.data.id + '"]'
+    );
+    if (el) {
+      el.addEventListener('click', function () {
+        switchScene(scene);
+        if (document.body.classList.contains('mobile')) {
+          hideSceneList();
+        }
+      });
+    }
+  });
+
+  // ======== CONTROLES MANUAIS ========
+  var viewUpElement = document.querySelector('#viewUp');
+  var viewDownElement = document.querySelector('#viewDown');
+  var viewLeftElement = document.querySelector('#viewLeft');
+  var viewRightElement = document.querySelector('#viewRight');
+  var viewInElement = document.querySelector('#viewIn');
+  var viewOutElement = document.querySelector('#viewOut');
+
+  var velocity = 0.7;
+  var friction = 3;
+
+  controls.registerMethod(
+    'upElement',
+    new Marzipano.ElementPressControlMethod(viewUpElement, 'y', -velocity, friction),
+    true
+  );
+  controls.registerMethod(
+    'downElement',
+    new Marzipano.ElementPressControlMethod(viewDownElement, 'y', velocity, friction),
+    true
+  );
+  controls.registerMethod(
+    'leftElement',
+    new Marzipano.ElementPressControlMethod(viewLeftElement, 'x', -velocity, friction),
+    true
+  );
+  controls.registerMethod(
+    'rightElement',
+    new Marzipano.ElementPressControlMethod(viewRightElement, 'x', velocity, friction),
+    true
+  );
+  controls.registerMethod(
+    'inElement',
+    new Marzipano.ElementPressControlMethod(viewInElement, 'zoom', -velocity, friction),
+    true
+  );
+  controls.registerMethod(
+    'outElement',
+    new Marzipano.ElementPressControlMethod(viewOutElement, 'zoom', velocity, friction),
+    true
+  );
+
+  // ======== GIROSCÓPIO (PEGANDO VIEW ATUAL A CADA FRAME) ========
   function enableGyroscope() {
-    if (typeof DeviceOrientationEvent === "undefined") {
-      console.warn("⚠️ Este navegador não suporta DeviceOrientationEvent.");
+    if (typeof DeviceOrientationEvent === 'undefined') {
+      console.warn('⚠️ Este navegador não suporta DeviceOrientationEvent.');
       return;
     }
 
     function startGyroTracking() {
-      const view = viewer.view();
-      let lastYaw = 0, lastPitch = 0;
-
-      window.addEventListener("deviceorientation", function (event) {
+      window.addEventListener('deviceorientation', function (event) {
         if (event.alpha == null || event.beta == null) return;
 
-        const yaw = (event.alpha * Math.PI) / 180;
-        const pitch = (event.beta * Math.PI) / 180;
+        // SEMPRE pega o view da cena ATUAL
+        var view = viewer.view();
 
-        lastYaw = lastYaw * 0.9 + yaw * 0.1;
-        lastPitch = lastPitch * 0.9 + pitch * 0.1;
+        var yaw = (event.alpha * Math.PI) / 180;
+        var pitch = (event.beta * Math.PI) / 180;
 
-        view.setYaw(-lastYaw);
-        view.setPitch(lastPitch / 2);
+        view.setYaw(-yaw);
+        view.setPitch(pitch / 2);
       });
 
-      console.log("✅ Giroscópio ativado e rastreando movimento!");
+      console.log('✅ Giroscópio ativado e rastreando movimento!');
     }
 
-    // === iOS ===
-    if (typeof DeviceOrientationEvent.requestPermission === "function") {
+    // iOS (precisa de permissão)
+    if (typeof DeviceOrientationEvent.requestPermission === 'function') {
       DeviceOrientationEvent.requestPermission()
-        .then((response) => {
-          if (response === "granted") startGyroTracking();
-          else alert("Permissão de giroscópio negada.");
-        })
-        .catch((err) => console.error("❌ Erro no iOS:", err));
-      return;
-    }
-
-    // === Android / Quest ===
-    if (navigator.permissions) {
-      navigator.permissions.query({ name: "gyroscope" })
-        .then((result) => {
-          if (result.state === "granted") {
+        .then(function (response) {
+          if (response === 'granted') {
             startGyroTracking();
           } else {
-            showEnableButton();
+            alert('Permissão do giroscópio negada.');
           }
         })
-        .catch(() => {
-          showEnableButton();
+        .catch(function (err) {
+          console.error('Erro ao pedir permissão no iOS:', err);
         });
     } else {
-      showEnableButton();
-    }
-
-    function showEnableButton() {
-      const btn = document.createElement("button");
-      btn.textContent = "Ativar Giroscópio";
-      Object.assign(btn.style, {
-        position: "absolute",
-        bottom: "20px",
-        left: "20px",
-        padding: "10px 15px",
-        background: "#000",
-        color: "#fff",
-        border: "1px solid #fff",
-        borderRadius: "8px",
-        zIndex: "9999",
-      });
-      btn.onclick = () => {
+      // Android / Quest / outros
+      // Começa após o primeiro toque na tela (gesto do usuário)
+      document.body.addEventListener('click', function initOnce() {
         startGyroTracking();
-        btn.remove();
-      };
-      document.body.appendChild(btn);
-      console.log("📱 Clique em 'Ativar Giroscópio' para liberar sensores");
+        document.body.removeEventListener('click', initOnce);
+      });
+      console.log('📱 Toque na tela para ativar o giroscópio');
     }
   }
 
-  // ======== INICIALIZAÇÃO ========
   if (/Android|iPhone|iPad|iPod|Quest|Oculus/i.test(navigator.userAgent)) {
     enableGyroscope();
   } else {
-    console.log("💻 Giroscópio desativado (modo desktop)");
+    console.log('💻 Giroscópio desativado (desktop)');
   }
 
+  // ======== CENA INICIAL ========
   switchScene(scenes[0]);
 })();
