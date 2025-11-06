@@ -350,7 +350,36 @@
   } else {
     console.log('💻 Giroscópio desativado (desktop)');
   }
+// ======== ENTRAR EM VR / TELA CHEIA + GIROSCÓPIO ========
 
+var vrButton = document.getElementById('enterVRButton');
+
+async function activateVR() {
+  // 1️⃣ Tenta entrar em tela cheia
+  if (panoElement.requestFullscreen) {
+    await panoElement.requestFullscreen();
+  } else if (panoElement.webkitRequestFullscreen) {
+    await panoElement.webkitRequestFullscreen();
+  } else if (panoElement.msRequestFullscreen) {
+    await panoElement.msRequestFullscreen();
+  }
+
+  // 2️⃣ Detecta dispositivo e ativa modo correto
+  const isQuest = /OculusBrowser|Meta Quest/i.test(navigator.userAgent);
+  if (isQuest && 'xr' in navigator) {
+    enableXRTracking();
+  } else if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+    enableGyroscope();
+  } else {
+    console.log('💻 Giroscópio desativado (desktop)');
+  }
+
+  // 3️⃣ Some o botão
+  vrButton.style.display = 'none';
+}
+
+// Clique do botão ativa tudo
+vrButton.addEventListener('click', activateVR);
   // ======== CENA INICIAL ========
   switchScene(scenes[0]);
 })();
