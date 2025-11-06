@@ -1,5 +1,6 @@
 /*
  * Marzipano VR Viewer - Compatível com Giroscópio (Android, iOS e Meta Quest)
+ * Compatível com WebXR (Meta Quest)
  * Ajustado por ChatGPT (versão 2025)
  */
 'use strict';
@@ -96,18 +97,14 @@
 
   function findSceneById(id) {
     for (var i = 0; i < scenes.length; i++) {
-      if (scenes[i].data.id === id) {
-        return scenes[i];
-      }
+      if (scenes[i].data.id === id) return scenes[i];
     }
     return null;
   }
 
   function findSceneDataById(id) {
     for (var i = 0; i < data.scenes.length; i++) {
-      if (data.scenes[i].id === id) {
-        return data.scenes[i];
-      }
+      if (data.scenes[i].id === id) return data.scenes[i];
     }
     return null;
   }
@@ -280,59 +277,37 @@
     document.body.classList.add('fullscreen-disabled');
   }
 
-  // ======== LISTA DE CENAS ========
-  function showSceneList() {
-    sceneListElement.classList.add('enabled');
-    sceneListToggleElement.classList.add('enabled');
-  }
+  // ======== GIROSCÓPIO + WEBXR ========
 
-  function hideSceneList() {
-    sceneListElement.classList.remove('enabled');
-    sceneListToggleElement.classList.remove('enabled');
-  }
-
-  function toggleSceneList() {
-    sceneListElement.classList.toggle('enabled');
-    sceneListToggleElement.classList.toggle('enabled');
-  }
-
-  sceneListToggleElement.addEventListener('click', toggleSceneList);
-
-  if (!document.body.classList.contains('mobile')) {
-    showSceneList();
-  }
-
-  scenes.forEach(function (scene) {
-    var el = document.querySelector('#sceneList .scene[data-id="' + scene.data.id + '"]');
-    if (el) {
-      el.addEventListener('click', function () {
-        switchScene(scene);
-        if (document.body.classList.contains('mobile')) {
-          hideSceneList();
-        }
-      });
+  async function enableXRTracking() {
+    if (!('xr' in navigator)) {
+      console.warn('⚠️ WebXR não disponível.');
+      return;
     }
-  });
 
-  // ======== CONTROLES MANUAIS ========
-  var viewUpElement = document.querySelector('#viewUp');
-  var viewDownElement = document.querySelector('#viewDown');
-  var viewLeftElement = document.querySelector('#viewLeft');
-  var viewRightElement = document.querySelector('#viewRight');
-  var viewInElement = document.querySelector('#viewIn');
-  var viewOutElement = document.querySelector('#viewOut');
+    const session = await navigator.xr.requestSession('inline');
+    const refSpace = await session.requestReferenceSpace('viewer');
 
-  var velocity = 0.7;
-  var friction = 3;
+    session.requestAnimationFrame(function onXRFrame(time, frame) {
+      const pose = frame.getViewerPose(refSpace);
+      if (pose) {
+        const quat = pose.transform.orientation;
+        const yaw = Math.atan2(
+          2 * (quat.y * quat.w + quat.x * quat.z),
+          1 - 2 * (quat.y * quat.y + quat.z * quat.z)
+        );
+        const pitch = Math.asin(2 * (quat.x * quat.w - quat.y * quat.z));
 
-  controls.registerMethod('upElement', new Marzipano.ElementPressControlMethod(viewUpElement, 'y', -velocity, friction), true);
-  controls.registerMethod('downElement', new Marzipano.ElementPressControlMethod(viewDownElement, 'y', velocity, friction), true);
-  controls.registerMethod('leftElement', new Marzipano.ElementPressControlMethod(viewLeftElement, 'x', -velocity, friction), true);
-  controls.registerMethod('rightElement', new Marzipano.ElementPressControlMethod(viewRightElement, 'x', velocity, friction), true);
-  controls.registerMethod('inElement', new Marzipano.ElementPressControlMethod(viewInElement, 'zoom', -velocity, friction), true);
-  controls.registerMethod('outElement', new Marzipano.ElementPressControlMethod(viewOutElement, 'zoom', velocity, friction), true);
+        const view = viewer.view();
+        view.setYaw(-yaw);
+        view.setPitch(pitch);
+      }
+      session.requestAnimationFrame(onXRFrame);
+    });
 
-  // ======== GIROSCÓPIO (ATUALIZADO) ========
+    console.log('✅ Rastreamento WebXR ativado (Meta Quest)');
+  }
+
   function enableGyroscope() {
     if (typeof DeviceOrientationEvent === 'undefined') {
       console.warn('⚠️ Este navegador não suporta DeviceOrientationEvent.');
@@ -342,30 +317,23 @@
     function startGyroTracking() {
       window.addEventListener('deviceorientation', function (event) {
         if (event.alpha == null || event.beta == null) return;
-
         var view = viewer.view();
         var yaw = (event.alpha * Math.PI) / 180;
         var pitch = (event.beta * Math.PI) / 180;
-
         view.setYaw(-yaw);
         view.setPitch(pitch / 2);
       });
-
-      console.log('✅ Giroscópio ativado e rastreando movimento!');
+      console.log('✅ Giroscópio ativado!');
     }
 
-    // iOS (precisa de permissão)
     if (typeof DeviceOrientationEvent.requestPermission === 'function') {
       DeviceOrientationEvent.requestPermission()
-        .then(function (response) {
+        .then((response) => {
           if (response === 'granted') startGyroTracking();
           else alert('Permissão do giroscópio negada.');
         })
-        .catch(function (err) {
-          console.error('Erro ao pedir permissão no iOS:', err);
-        });
+        .catch((err) => console.error('Erro iOS:', err));
     } else {
-      // Android e similares
       document.body.addEventListener('click', function initOnce() {
         startGyroTracking();
         document.body.removeEventListener('click', initOnce);
@@ -375,9 +343,8 @@
   }
 
   const isQuest = /OculusBrowser|Meta Quest/i.test(navigator.userAgent);
-  if (isQuest) {
-    console.warn('⚠️ Giroscópio não suportado no Meta Quest Browser.');
-    alert('⚠️ No Meta Quest, o giroscópio não é compatível.\nUse o controle manual ou joystick.');
+  if (isQuest && 'xr' in navigator) {
+    enableXRTracking();
   } else if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
     enableGyroscope();
   } else {
