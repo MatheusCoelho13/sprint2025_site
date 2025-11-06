@@ -1,5 +1,6 @@
 /*
  * Marzipano VR Viewer - Compatível com Giroscópio (Android, iOS e Meta Quest)
+ * Ajustado por ChatGPT (versão 2025)
  */
 'use strict';
 
@@ -50,17 +51,14 @@
     document.body.classList.add('touch');
   });
 
-  // IE velho
+  // IE antigo
   if (bowser.msie && parseFloat(bowser.version) < 11) {
     document.body.classList.add('tooltip-fallback');
   }
 
   // ======== FUNÇÕES BASE ========
   function sanitize(s) {
-    return s
-      .replace('&', '&amp;')
-      .replace('<', '&lt;')
-      .replace('>', '&gt;');
+    return s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;');
   }
 
   function updateSceneName(scene) {
@@ -88,10 +86,7 @@
   }
 
   function stopTouchAndScrollEventPropagation(element) {
-    var eventList = [
-      'touchstart', 'touchmove', 'touchend', 'touchcancel',
-      'wheel', 'mousewheel'
-    ];
+    var eventList = ['touchstart', 'touchmove', 'touchend', 'touchcancel', 'wheel', 'mousewheel'];
     for (var i = 0; i < eventList.length; i++) {
       element.addEventListener(eventList[i], function (event) {
         event.stopPropagation();
@@ -143,7 +138,6 @@
 
     wrapper.appendChild(icon);
     wrapper.appendChild(tooltip);
-
     return wrapper;
   }
 
@@ -196,15 +190,10 @@
       modal.classList.toggle('visible');
     };
 
-    wrapper
-      .querySelector('.info-hotspot-header')
-      .addEventListener('click', toggle);
-    modal
-      .querySelector('.info-hotspot-close-wrapper')
-      .addEventListener('click', toggle);
+    wrapper.querySelector('.info-hotspot-header').addEventListener('click', toggle);
+    modal.querySelector('.info-hotspot-close-wrapper').addEventListener('click', toggle);
 
     stopTouchAndScrollEventPropagation(wrapper);
-
     return wrapper;
   }
 
@@ -233,25 +222,15 @@
 
     dataScene.linkHotspots.forEach(function (hotspot) {
       var element = createLinkHotspotElement(hotspot);
-      scene.hotspotContainer().createHotspot(element, {
-        yaw: hotspot.yaw,
-        pitch: hotspot.pitch
-      });
+      scene.hotspotContainer().createHotspot(element, { yaw: hotspot.yaw, pitch: hotspot.pitch });
     });
 
     dataScene.infoHotspots.forEach(function (hotspot) {
       var element = createInfoHotspotElement(hotspot);
-      scene.hotspotContainer().createHotspot(element, {
-        yaw: hotspot.yaw,
-        pitch: hotspot.pitch
-      });
+      scene.hotspotContainer().createHotspot(element, { yaw: hotspot.yaw, pitch: hotspot.pitch });
     });
 
-    return {
-      data: dataScene,
-      scene: scene,
-      view: view
-    };
+    return { data: dataScene, scene: scene, view: view };
   });
 
   // ======== AUTOROTAÇÃO ========
@@ -324,9 +303,7 @@
   }
 
   scenes.forEach(function (scene) {
-    var el = document.querySelector(
-      '#sceneList .scene[data-id="' + scene.data.id + '"]'
-    );
+    var el = document.querySelector('#sceneList .scene[data-id="' + scene.data.id + '"]');
     if (el) {
       el.addEventListener('click', function () {
         switchScene(scene);
@@ -348,38 +325,14 @@
   var velocity = 0.7;
   var friction = 3;
 
-  controls.registerMethod(
-    'upElement',
-    new Marzipano.ElementPressControlMethod(viewUpElement, 'y', -velocity, friction),
-    true
-  );
-  controls.registerMethod(
-    'downElement',
-    new Marzipano.ElementPressControlMethod(viewDownElement, 'y', velocity, friction),
-    true
-  );
-  controls.registerMethod(
-    'leftElement',
-    new Marzipano.ElementPressControlMethod(viewLeftElement, 'x', -velocity, friction),
-    true
-  );
-  controls.registerMethod(
-    'rightElement',
-    new Marzipano.ElementPressControlMethod(viewRightElement, 'x', velocity, friction),
-    true
-  );
-  controls.registerMethod(
-    'inElement',
-    new Marzipano.ElementPressControlMethod(viewInElement, 'zoom', -velocity, friction),
-    true
-  );
-  controls.registerMethod(
-    'outElement',
-    new Marzipano.ElementPressControlMethod(viewOutElement, 'zoom', velocity, friction),
-    true
-  );
+  controls.registerMethod('upElement', new Marzipano.ElementPressControlMethod(viewUpElement, 'y', -velocity, friction), true);
+  controls.registerMethod('downElement', new Marzipano.ElementPressControlMethod(viewDownElement, 'y', velocity, friction), true);
+  controls.registerMethod('leftElement', new Marzipano.ElementPressControlMethod(viewLeftElement, 'x', -velocity, friction), true);
+  controls.registerMethod('rightElement', new Marzipano.ElementPressControlMethod(viewRightElement, 'x', velocity, friction), true);
+  controls.registerMethod('inElement', new Marzipano.ElementPressControlMethod(viewInElement, 'zoom', -velocity, friction), true);
+  controls.registerMethod('outElement', new Marzipano.ElementPressControlMethod(viewOutElement, 'zoom', velocity, friction), true);
 
-  // ======== GIROSCÓPIO (PEGANDO VIEW ATUAL A CADA FRAME) ========
+  // ======== GIROSCÓPIO (ATUALIZADO) ========
   function enableGyroscope() {
     if (typeof DeviceOrientationEvent === 'undefined') {
       console.warn('⚠️ Este navegador não suporta DeviceOrientationEvent.');
@@ -390,9 +343,7 @@
       window.addEventListener('deviceorientation', function (event) {
         if (event.alpha == null || event.beta == null) return;
 
-        // SEMPRE pega o view da cena ATUAL
         var view = viewer.view();
-
         var yaw = (event.alpha * Math.PI) / 180;
         var pitch = (event.beta * Math.PI) / 180;
 
@@ -407,18 +358,14 @@
     if (typeof DeviceOrientationEvent.requestPermission === 'function') {
       DeviceOrientationEvent.requestPermission()
         .then(function (response) {
-          if (response === 'granted') {
-            startGyroTracking();
-          } else {
-            alert('Permissão do giroscópio negada.');
-          }
+          if (response === 'granted') startGyroTracking();
+          else alert('Permissão do giroscópio negada.');
         })
         .catch(function (err) {
           console.error('Erro ao pedir permissão no iOS:', err);
         });
     } else {
-      // Android / Quest / outros
-      // Começa após o primeiro toque na tela (gesto do usuário)
+      // Android e similares
       document.body.addEventListener('click', function initOnce() {
         startGyroTracking();
         document.body.removeEventListener('click', initOnce);
@@ -427,7 +374,11 @@
     }
   }
 
-  if (/Android|iPhone|iPad|iPod|Quest|Oculus/i.test(navigator.userAgent)) {
+  const isQuest = /OculusBrowser|Meta Quest/i.test(navigator.userAgent);
+  if (isQuest) {
+    console.warn('⚠️ Giroscópio não suportado no Meta Quest Browser.');
+    alert('⚠️ No Meta Quest, o giroscópio não é compatível.\nUse o controle manual ou joystick.');
+  } else if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
     enableGyroscope();
   } else {
     console.log('💻 Giroscópio desativado (desktop)');
