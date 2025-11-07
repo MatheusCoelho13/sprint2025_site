@@ -232,6 +232,7 @@
       window.removeEventListener('touchend', handler);
       try {
         enableGyroscope();
+        alert('Giroscópio ativado após gesto do usuário.');
       } catch (err) {
         console.warn('Fallback de gesto não conseguiu ativar giroscópio:', err);
       }
@@ -249,8 +250,10 @@
         console.log('Meta Quest detectado — sensores serão habilitados automaticamente.');
         // Alguns builds do Oculus Browser exigem gesto inicial; conectamos um fallback leve.
         attachGestureFallback();
+         alert('Giroscópio ativado após gesto do usuário.');
       }
     } catch (e) {
+       alert(' nao Giroscópio ativado após gesto do usuário.');
       console.warn('Não foi possível ativar giroscópio automaticamente:', e);
       if (isMetaQuest) {
         attachGestureFallback();

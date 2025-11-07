@@ -32,4 +32,4 @@ O projeto agora está:
 - Todas as dependências atualizadas e testadas no ambiente React + TypeScript.  
 - Garantida a compatibilidade com navegadores VR e padrão WebXR.  
  
-### 🧾 Versão 1.9.3
+### 🧾 Versão 1.9.5
