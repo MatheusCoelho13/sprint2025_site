@@ -1,89 +1,84 @@
-# 🧭 TODO LIST — Projeto Biotic
+# ✅ TODO LIST — Projeto Biotic
 
-Organização das melhorias visuais e funcionais do site **Biotic**, separadas por prioridade geral.  
-Legenda:  
-🔥 **Alta prioridade** — Essenciais para UX/UI e identidade.  
-✨ **Média prioridade** — Melhorias visuais e refinamentos.  
-💡 **Baixa prioridade** — Toques criativos e detalhes estéticos.
+> **"Viaje por realidades impossíveis e descubra mundos que só existem na sua imaginação."**  
+> Um tour virtual que transforma curiosidade em aventura épica.
 
 ---
 
-## 🔥 ALTA PRIORIDADE
+## 🎨 Design & Interface
 
-### 🟩 T1 — Tela Inicial (“BIOTIC / Iniciar Tour Virtual”)
-- [ ok] 💫 Adicionar **animação no fundo binário** (scroll, parallax ou flutuação).  
-- [ok ] 🧭 Criar **menu fixo transparente com blur** e links (“Sobre”, “Tour”, “Contato”).  
-- [ ] 🪞 Inserir **logo animado** (símbolo da Biotic, átomo, esfera ou partícula).  
+### 🎯 Hero Section (Tela inicial)
+- [x] Logotipo **"BIOTIC"** com gradiente suave (amarelo → verde → azul)
+- [x] Fundo animado estilo **Matrix** (números binários)
 
-### 🟦 T2 — Tela de Destaque (“Sua Próxima Aventura Começa Aqui”)
-- [ ] ⚡ Adicionar **animação de entrada** no título e subtítulo (fade-in + scale).  
-- [none] 🌟 Criar **hover animado** no botão “Explorar Agora” (glow + scale 1.05).  
-- [ ] 🎨 Aumentar **contraste** do subtítulo e do texto no rodapé.  
+- [x] Ajustar contraste do texto principal (`#e8ecf1` em vez de branco puro)
+- [ ] Inserir **sombra suave** no logo para maior destaque
+- [x] Animação de entrada do título com **Framer Motion**
+- [ ] Suavizar espaçamento e line-height do subtítulo principal
 
-### 🟨 T3 — Tela Intermediária (“Por Que Biotic é Especial?”)
-- [ ] ✋ Adicionar **hover animado nos cards** (zoom leve + borda luminosa).  
-- [ ] 🧍 Corrigir **alinhamento vertical** do texto dentro dos cards (`flex flex-col justify-between`).  
-- [ ] 💬 Aumentar **tamanho e espaçamento interno** do texto (`p-6`, `gap-3`).  
-
-### 🧩 T4 — Ajustes Globais
-- [ ] ⚡ Adicionar **transições suaves** (`transition-all duration-300`) em botões e cards.  
-- [ ] 🎥 Integrar **Framer Motion** para fade-in e parallax no scroll.  
-- [ ] 📱 Garantir **responsividade total** em 768px e 480px.
+### 🖱️ Botões e interações
+- [x] Botão principal “Iniciar Tour Virtual”
+- [ ] Adicionar **hover animado** (leve `scale(1.05)` + sombra)
+- [x] Criar **transição suave (scroll ou route)** ao clicar no botão
+- [ ] Inserir **efeito de brilho** ou **gradiente animado** no hover
+- [ ] Revisar contraste do botão em telas OLED
 
 ---
 
-## ✨ MÉDIA PRIORIDADE
-
-### 🟩 T1 — Tela Inicial
-- [ ] ⚙️ Ajustar **espaçamento vertical** entre título e botão principal.  
-- [ ] 🌈 Adicionar **sombra radial ou glow pulsante** no botão ao passar o mouse.  
-- [ ] 🪶 Criar **animação de fade/scale** no título “BIOTIC”.  
-
-### 🟦 T2 — Tela de Destaque
-- [ ] 🧱 Ajustar **padding e margens** antes do footer (`pb-20`, `mt-10`).  
-- [ ] 🧭 Centralizar verticalmente o conteúdo em telas menores.  
-- [ ] 🧠 Adicionar **pulsação contínua** no botão (loop lento).  
-
-### 🟨 T3 — Tela Intermediária
-- [ ] 🎛️ Suavizar **sombra dos cards** (`shadow-[0_0_20px_rgba(255,255,255,0.05)]`).  
-- [ ] 🎨 Usar **tracking-wide** nos títulos dos cards.  
-- [ ] 🌠 Adicionar **animação escalonada** de entrada dos cards.  
-
-### 🧩 T4 — Ajustes Globais
-- [ ] 🪞 Reforçar **identidade visual da marca Biotic** (gradientes, ícones, slogan fixo).  
-- [ ] 🧠 Revisar **textos e microcopy** para fluidez e impacto narrativo.  
+## ⚙️ Funcionalidades
+## 👨‍💻 Ideias de implementaçao
+- [ ] Adicionar leve **efeito de parallax ou giroscópio** no fundo
+### 🌐 Tour Virtual
+- [x] Integração do botão com rota `/tour`
+- [ ] Ajustar comportamento em **Meta Quest Browser** (VR automático)
+- [x] Confirmar ativação do **sensor giroscópio**
+- [ ] colocar **tela de loading** quando  abiri o tour (somente destok e celular) 
+- [ ] Implementar fallback para desktop (navegação via mouse)
 
 ---
 
-## 💡 BAIXA PRIORIDADE
+### 🔧 Performance e compatibilidade
 
-### 🟩 T1 — Tela Inicial
-- [ ] 🔤 Melhorar **contraste do texto secundário** (`text-gray-100`).  
-- [ ] 🧩 Criar **transição suave** entre essa tela e “Por Que Biotic é Especial?”.  
+- [ ] Testar desempenho no **Vercel** e **AWS EC2**
+- [ ] Adicionar **lazy loading** nas seções abaixo do fold
+- [x] Ajustar **viewport meta tags** para compatibilidade VR
+- [ ] Testar funcionamento no navegador padrão do Meta Quest
+- [ ] Adicionar **detecção automática de dispositivo** (VR / mobile / PC)
+---
 
-### 🟦 T2 — Tela de Destaque
-- [ ] 🧾 Criar **transição visual** entre conteúdo e footer (gradiente ou partícula).  
-- [ ] 💬 Melhorar **espaçamento de linhas** do subtítulo (`leading-relaxed`).  
+## 🧭 Conteúdo e Navegação
 
-### 🟨 T3 — Tela Intermediária
-- [ ] 🔄 Aplicar **gradiente de transição** entre seções.  
-- [ ] 🧩 Adicionar **divider animado** (linha binária horizontal se movendo).  
-
-### 🧩 T4 — Ajustes Globais
-- [ ] 🌌 Adicionar **cursor personalizado** (rastro de luz ou partícula sutil).  
-- [ ] 🔉 Criar **efeito sonoro leve** ao clicar em botões (imersão interativa).
+- [x] Texto principal revisado (“Viaje por realidades impossíveis...”)
+- [ ] Adicionar subtítulo secundário com frase de impacto
+- [ ] Inserir seção “Explore o futuro da tecnologia” com animação
+- [ ] Criar botão secundário “Saiba mais”
+- [ ] Revisar rotas com `ForceTrailingSlash()` no React Router
 
 ---
 
-## 📊 STATUS DE EXECUÇÃO
-| Prioridade | Tarefas | Concluídas | Progresso |
-|-------------|----------|-------------|------------|
-| 🔥 Alta | 12 | 0 | ☐ 0% |
-| ✨ Média | 10 | 0 | ☐ 0% |
-| 💡 Baixa | 8 | 0 | ☐ 0% |
+## 🧩 Código e Estrutura
+
+- [x] Componente `AnimatedTechBackground`
+- [x] Componente `Title`, `SubTitle` e `Button`
+- [ ] Compatibilide a giroscopio tambem na homepage
+- [ ] Revisar `index.css` e remover redundâncias
+- [ ] Adicionar comentários de documentação nos principais componentes
+- [ ] Atualizar README com instruções de build e deploy
+- [ ] Adicionar **modo noturno e claro** automático
+---
+
+## 🧠 Melhorias Futuras
+
+
+- [ ] Implementar **tradução EN/PT** com i18next
+- [ ] Criar página “Sobre o Biotic” com créditos e equipe
+- [ ] Adicionar **analytics** de visualizações do tour
+- [ ] Integração com **API de hotspots dinâmicos** (banco de dados)
 
 ---
 
-🧠 **Dica:**  
-Priorize primeiro as tarefas 🔥 — elas vão deixar o site muito mais imersivo e com uma experiência moderna, ideal para a apresentação do **Biotic Tour**.
+### 📅 Última atualização
+**Data:** `07/11/25`  
+**Responsável:** `Matheus Coelho`
 
+---

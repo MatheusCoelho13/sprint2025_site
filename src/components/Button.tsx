@@ -13,7 +13,11 @@ const Buttons: React.FC = () => {
                 className="flex flex-col sm:flex-row gap-4 justify-center items-center mt-12"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.7 }}
+        transition={{
+          delay: 0.7,
+          type: 'spring',
+          stiffness: 80
+        }}
                 whileHover={{ scale: 1.05 }} 
                 whileTap={{ scale: 0.98 }}
                 >

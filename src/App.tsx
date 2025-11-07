@@ -11,8 +11,9 @@ import { Globe, Users, Zap } from "lucide-react";
 import { Link, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import Tour from "./pages/tour";
-import React from 'react';
-
+import React from "react";
+import TextWriting from "./components/modules/Text_writting";
+import Logo from "./assets/Logo.png";
 /**
  * 🔁 Força uma barra final ("/") nas URLs — ex: "/tour" → "/tour/"
  */
@@ -53,7 +54,8 @@ function Home() {
     {
       icon: Zap,
       title: "Conheça o futuro da tecnologia do DF",
-      description: "Entre no universo tecnológico que está transformando o Distrito Federal.",
+      description:
+        "Entre no universo tecnológico que está transformando o Distrito Federal.",
       bgColor: "bg-gradient-to-br from-[#1a5a7e]/20 to-[#0a3d5a]/20",
       borderColor: "border-[#1a5a7e]/50",
       iconBg: "from-[#1a5a7e] to-[#0a3d5a]",
@@ -64,11 +66,12 @@ function Home() {
   return (
     <>
       <AnimatedTechBackground />
-
+      {/* TODO: REFATORAR ISSO :( */}
       <div className="relative w-full h-full flex flex-col items-center justify-center overflow-hidden">
         <div className="relative z-20 w-full">
           {/* Header */}
-          <header className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-[#0a3d5a]/20 border-b border-[#1a5a7e]/30">
+          <header className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-[#0a3d5a]/20 border-b border-[#1a5a7e]/30
+          h-21">
             <div className="container mx-auto px-6 py-4 flex justify-between">
               <motion.div
                 className="flex items-center gap-2"
@@ -76,30 +79,46 @@ function Home() {
                 animate={{ opacity: 1, x: 0 }}
               >
                 <Link to="/" className="text-white text-xl font-bold">
-              {/* TODO: Adicionar logo aqui  */}
-               </Link>
+                  <img
+                    src={Logo}
+                    alt="Logo"
+                    className=" relative right-20 bottom-2"
+                    width={90}
+                    height={90} />
+                  
+                </Link>
               </motion.div>
             </div>
           </header>
 
           {/* Conteúdo principal */}
           <div className="relative z-10 text-center text-white px-6 pt-28">
-            <div className="pt-32"></div>
-            <Title />
-            <div className="pt-16"></div>
-            <SubTitle />
-            <div className="pt-10"></div>
-
-            <p className="text-lg mb-8 max-w-2xl mx-auto">
-              Um tour virtual que transforma curiosidade em aventura épica
-            </p>
-
-            <Link
-              to="/tour/"
-              className="text-white hover:text-[#3b7d46] transition"
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              viewport={{ once: true }}
             >
-              <Buttons />
-            </Link>
+              <div className="pt-32" />
+              <Title />
+              <div className="pt-16" />
+              <SubTitle />
+              <div className="pt-10" />
+
+              <p className="text-lg mb-8 max-w-2xl mx-auto">
+                Um tour virtual que transforma curiosidade em aventura épica
+              </p>
+
+              {/* Animação de texto com Typewriter */}
+       <TextWriting  className="mt-6" />
+
+              <Link
+                to="/tour/"
+                className="text-white hover:text-[#3b7d46] transition"
+              >
+                <Buttons />
+              </Link>
+            </motion.div>
           </div>
 
           {/* Cards */}
@@ -108,6 +127,7 @@ function Home() {
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
                 viewport={{ once: true }}
                 className="text-center mb-16"
               >
@@ -121,17 +141,30 @@ function Home() {
 
               <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
                 {features.map((feature, index) => (
-                  <Cards key={index} {...feature} index={index} />
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 50 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.2, duration: 0.7 }}
+                    viewport={{ once: true }}
+                  >
+                    <Cards {...feature} index={index} />
+                  </motion.div>
                 ))}
               </div>
             </div>
           </section>
 
-          {/* Seção pré-final */}
-          <Sections1 />
-
-          {/* Footer */}
-          <Footer />
+          {/* Seção pré-final e footer */}
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.9 }}
+            viewport={{ once: true }}
+          >
+            <Sections1 />
+            <Footer />
+          </motion.div>
         </div>
       </div>
     </>
@@ -145,14 +178,14 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/tour/" element={<Tour />} />
-        {/* <Route
+        <Route
           path="*"
           element={
             <h1 className="text-white text-center mt-20">
               404 - Página não encontrada
             </h1>
           }
-        /> */}
+        /> 
       </Routes>
     </>
   );
