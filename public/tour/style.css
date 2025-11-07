@@ -96,10 +96,10 @@ body.multiple-scenes.mobile #titleBar {
 }
 
 #fullscreenToggle {
-  display: none;
+
   position: absolute;
   top: 0;
-  right: 0;
+  right: 60px;
   width: 40px;
   height: 40px;
   padding: 5px;

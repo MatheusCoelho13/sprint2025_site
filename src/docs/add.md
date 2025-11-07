@@ -32,4 +32,14 @@ O projeto agora está:
 - Todas as dependências atualizadas e testadas no ambiente React + TypeScript.  
 - Garantida a compatibilidade com navegadores VR e padrão WebXR.  
  
+ ### 👩‍💻 Bugs ##
+- modo vr desabilitado por motivos de segurança
+- logo cortada
+- falta de otimização
+
 ### 🧾 Versão 1.9.5
+
+# Correçao de bug
+- modo vr habilitado 
+- logo normal 
+- otimizado 
