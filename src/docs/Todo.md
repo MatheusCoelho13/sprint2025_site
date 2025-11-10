@@ -18,7 +18,7 @@
 
 ### 🖱️ Botões e interações
 - [x] Botão principal “Iniciar Tour Virtual”
-- [ ] Adicionar **hover animado** (leve `scale(1.05)` + sombra)
+- [x] Adicionar **hover animado** (leve `scale(1.05)` + sombra)
 - [x] Criar **transição suave (scroll ou route)** ao clicar no botão
 - [ ] Inserir **efeito de brilho** ou **gradiente animado** no hover
 - [ ] Revisar contraste do botão em telas OLED
@@ -76,9 +76,19 @@
 - [ ] Integração com **API de hotspots dinâmicos** (banco de dados)
 
 ---
+## testes
+
+-[ ]  teste do giroscopio no meta quest
+- [ ] testar conecçao por  sem fio
+- [ ] 
+ 
+ ## o que precisa baixar 
+ -[ ] android studio 
+ -[ ] platafrom tool
+ -[ ] meta quest link
 
 ### 📅 Última atualização
-**Data:** `07/11/25`  
+**Data:** `09/11/25`  
 **Responsável:** `Matheus Coelho`
 
 ---

@@ -37,9 +37,18 @@ O projeto agora está:
 - logo cortada
 - falta de otimização
 
-### 🧾 Versão 1.9.5
+### 🧾 Versão 1.9.3 - 1.9.31 -> 1.9.3*
 
 # Correçao de bug
 - modo vr habilitado 
 - logo normal 
 - otimizado 
+
+
+
+### 🧾 Versão 1.9.4
+ -correção no giroscopio na parte do celular
+  
+ ### 👩‍💻 Bugs ##
+ -resposabilidade na parte do menu ( logo )
+ 

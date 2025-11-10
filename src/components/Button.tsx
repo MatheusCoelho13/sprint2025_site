@@ -25,7 +25,7 @@ const Buttons: React.FC = () => {
         
                 <Button 
                   size="lg"
-                  className="bg-gradient-to-r from-[#e8b443] to-[#3b7d46] hover:from-[#e8b443]/90 hover:to-[#3b7d46]/90 text-[#0a3d5a] font-bold text-lg px-8 py-6 rounded-2xl shadow-2xl shadow-[#e8b443]/40 transform hover:scale-105 transition-all duration-300 group"
+                  className="bg-gradient-to-r from-[#e8b443] to-[#3b7d46] hover:from-[#3b7d46]/90 hover:to-[#e9b423]/90 text-[#0a3d5a] font-bold text-lg px-8 py-6 rounded-2xl shadow-2xl shadow-[#e8b443]/40 transform hover:scale-105 transition-all duration-300 group"
                   onMouseEnter={() => setIsHovered(true)}
                   onMouseLeave={() => setIsHovered(false)}
                 >
