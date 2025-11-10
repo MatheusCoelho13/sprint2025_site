@@ -51,4 +51,3 @@ O projeto agora está:
   
  ### 👩‍💻 Bugs ##
  -resposabilidade na parte do menu ( logo )
- 

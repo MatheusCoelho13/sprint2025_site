@@ -1,5 +1,5 @@
 'use strict';
- 
+
 (function () {
   var Marzipano = window.Marzipano;
   var bowser = window.bowser;
@@ -218,57 +218,21 @@
   }
 
   // Não exibir botão de ativação em celulares conforme solicitado.
-  // Em vez disso, tentamos ativar automaticamente apenas em plataformas não-mobile
-  // e liberamos explicitamente o Meta Quest (Oculus Browser), pois ele usa um UA "Android"
-  // mas possui sensores de rotação compatíveis.
-  var userAgent = navigator.userAgent || '';
-  var isMobile = /Mobi|Android|iPhone|iPad|iPod/.test(userAgent);
-  var isMetaQuest = /\b(OculusBrowser|Quest)\b/i.test(userAgent);
-  var shouldAutoEnableGyro = !isMobile || isMetaQuest;
-
-  function attachGestureFallback() {
-    var handler = function () {
-      window.removeEventListener('click', handler);
-      window.removeEventListener('touchend', handler);
-      try {
-        enableGyroscope();
-        alert('Giroscópio ativado após gesto do usuário.');
-      } catch (err) {
-        console.warn('Fallback de gesto não conseguiu ativar giroscópio:', err);
-      }
-    };
-
-    window.addEventListener('click', handler);
-    window.addEventListener('touchend', handler);
-  }
-
-  if (shouldAutoEnableGyro) {
+  // Em vez disso, tentamos ativar automaticamente apenas em plataformas não-mobile.
+  var isMobile = /Mobi|Android|iPhone|iPad|iPod/.test(navigator.userAgent);
+  if (!isMobile) {
+    // Desktop/ambiente de teste: tentar ativar o giroscópio
     try {
       enableGyroscope();
-
-      if (isMetaQuest) {
-        console.log('Meta Quest detectado — sensores serão habilitados automaticamente.');
-        // Alguns builds do Oculus Browser exigem gesto inicial; conectamos um fallback leve.
-        attachGestureFallback();
-         alert('Giroscópio ativado após gesto do usuário.');
-      }
     } catch (e) {
-       alert(' nao Giroscópio ativado após gesto do usuário.');
       console.warn('Não foi possível ativar giroscópio automaticamente:', e);
-      if (isMetaQuest) {
-        attachGestureFallback();
-      }
     }
   } else {
-    // Mobile tradicional: não criar botão nem ativar automaticamente
+    // Mobile: não criar botão nem ativar automaticamente
     console.log('Mobile detectado — controle de giroscópio oculto para usuários de celular.');
   }
 
   // ======== INICIALIZAÇÃO ========
-  // switchScene = null; // forçando erro para teste
+
   switchScene(scenes[0]);
-  if (switchScene == null) {
-  console.error('❌ switchScene não foi inicializado corretamente.');
-  alert('Erro ao inicializar a visualização 360°. Por favor, recarregue a página.');
- } 
 })();
