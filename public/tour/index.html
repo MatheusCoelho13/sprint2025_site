@@ -1,216 +1,157 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
-<title>Project Title</title>
-<meta charset="utf-8">
-<meta name="viewport"
-  content="width=device-width,
-           initial-scale=1.0,
-           maximum-scale=1.0,
-           minimum-scale=1.0,
-           user-scalable=no,
-           viewport-fit=cover">
+  <title>Project Title</title>
+  <meta charset="utf-8">
+  <meta name="viewport"
+        content="width=device-width,
+                 initial-scale=1.0,
+                 maximum-scale=1.0,
+                 minimum-scale=1.0,
+                 user-scalable=no,
+                 viewport-fit=cover" />
 
-<meta http-equiv="origin-trial" content="GyroscopeOrientation">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#000000">
+  <!-- ✅ Corrige permissões para sensores e VR -->
+  <meta http-equiv="Permissions-Policy"
+        content="accelerometer=(self), gyroscope=(self), magnetometer=(self), vr=(self), fullscreen=(self)" />
+  <meta http-equiv="Cross-Origin-Opener-Policy" content="same-origin">
+  <meta http-equiv="Cross-Origin-Embedder-Policy" content="require-corp">
 
-<meta name="viewport" content="target-densitydpi=device-dpi, width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, minimal-ui" />
-<style> @-ms-viewport { width: device-width; } </style>
-<link rel="stylesheet" href="vendor/reset.min.css">
-<link rel="stylesheet" href="style.css">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#000000">
+
+  <link rel="stylesheet" href="vendor/reset.min.css">
+  <link rel="stylesheet" href="style.css">
 </head>
+
 <body class="multiple-scenes view-control-buttons">
+  <!-- Contêiner principal do panorama -->
+  <div id="pano"></div>
 
-<div id="pano"></div>
-<script>
-// Handler global para eventos de orientação do dispositivo.
-// Defined here to avoid ReferenceError when other scripts add/remove the listener.
-function handleOrientation(e) {
-  // Salva o último evento para depuração/uso futuro por outros scripts.
-  window.__lastDeviceOrientation = e;
-}
+  <!-- ✅ Script para controle do giroscópio -->
+  <script>
+    function handleOrientation(e) {
+      window.__lastDeviceOrientation = e;
+    }
 
-function enableGyroscope() {
-  if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
-    // iOS / Meta Quest (necessita permissão explícita)
-    DeviceOrientationEvent.requestPermission()
-      .then(response => {
-        if (response === 'granted') {
-          window.addEventListener('deviceorientation', handleOrientation);
-          alert("✅ Giroscópio ativado com sucesso!");
+    async function enableGyroscope() {
+      try {
+        if (typeof DeviceOrientationEvent !== "undefined" &&
+            typeof DeviceOrientationEvent.requestPermission === "function") {
+          const permission = await DeviceOrientationEvent.requestPermission();
+          if (permission === "granted") {
+            window.addEventListener("deviceorientation", handleOrientation);
+            alert("✅ Giroscópio ativado!");
+          } else {
+            alert("❌ Permissão negada. Vá em Configurações → Movimento do Sensor.");
+          }
         } else {
-          alert("❌ Permissão negada para o giroscópio.");
+          // Wolvic, Meta Quest, Android antigos
+          window.addEventListener("deviceorientation", handleOrientation);
+          console.log("✅ Giroscópio ativado automaticamente.");
         }
-      })
-      .catch(console.error);
-  } else {
-    // Android / navegadores que não exigem permissão
-    window.addEventListener('deviceorientation', handleOrientation);
-  }
-}
+      } catch (err) {
+        console.error("Erro ao ativar giroscópio:", err);
+      }
+    }
 
-// Chama ao clicar em um botão, ou logo ao carregar:
-// Ativa o giroscópio automaticamente APENAS em desktops (para testes).
-// Não ativa automaticamente em celulares; assim o botão/não aparece em mobile.
-window.addEventListener('load', () => {
-  var isMobile = /Mobi|Android|iPhone|iPad|iPod/.test(navigator.userAgent);
-  if (!isMobile) {
-    console.log('Desktop detectado — ativando giroscópio para testes');
-    enableGyroscope();
-  } else {
-    console.log('Mobile detectado — não ativando giroscópio automaticamente');
-  }
-});
-</script>
+    window.addEventListener("load", () => {
+      const isVR = /OculusBrowser|Meta Quest|Android|iPhone|iPad/i.test(navigator.userAgent);
+      const btn = document.getElementById("enterVRButton");
 
-<div id="sceneList">
-  <ul class="scenes">
-    
-      <a href="javascript:void(0)" class="scene" data-id="0-entrada_tarde">
-        <li class="text">entrada_tarde</li>
-      </a>
-    
-      <a href="javascript:void(0)" class="scene" data-id="1-terreo_entrada">
-        <li class="text">terreo_entrada</li>
-      </a>
-    
-      <a href="javascript:void(0)" class="scene" data-id="2-salao_geral">
-        <li class="text">salao_geral</li>
-      </a>
-    
-      <a href="javascript:void(0)" class="scene" data-id="3-terreo_elevador">
-        <li class="text">terreo_elevador</li>
-      </a>
-    
-      <a href="javascript:void(0)" class="scene" data-id="4-terreo_corredor1">
-        <li class="text">terreo_corredor1</li>
-      </a>
-    
-      <a href="javascript:void(0)" class="scene" data-id="5-terreo_corredor2">
-        <li class="text">terreo_corredor2</li>
-      </a>
-    
-      <a href="javascript:void(0)" class="scene" data-id="6-1andar_entrada">
-        <li class="text">1andar_entrada</li>
-      </a>
-    
-      <a href="javascript:void(0)" class="scene" data-id="7-1andar_meio_corredor">
-        <li class="text">1andar_meio_corredor</li>
-      </a>
-    
-      <a href="javascript:void(0)" class="scene" data-id="8-1andar_corredor_cubiculo">
-        <li class="text">1andar_corredor_cubiculo</li>
-      </a>
-    
-      <a href="javascript:void(0)" class="scene" data-id="9-1andar_cubiculos">
-        <li class="text">1andar_cubiculos</li>
-      </a>
-    
-      <a href="javascript:void(0)" class="scene" data-id="10-1andar_finalcorredor1">
-        <li class="text">1andar_finalcorredor1</li>
-      </a>
-    
-      <a href="javascript:void(0)" class="scene" data-id="11-1andar_finalcorredor2">
-        <li class="text">1andar_finalcorredor2</li>
-      </a>
-    
-      <a href="javascript:void(0)" class="scene" data-id="12-1andar_finalcorredor_elevador">
-        <li class="text">1andar_finalcorredor_elevador</li>
-      </a>
-    
-      <a href="javascript:void(0)" class="scene" data-id="13-2andar_entrada">
-        <li class="text">2andar_entrada</li>
-      </a>
-    
-      <a href="javascript:void(0)" class="scene" data-id="14-2andar_corredor_elevador">
-        <li class="text">2andar_corredor_elevador</li>
-      </a>
-    
-      <a href="javascript:void(0)" class="scene" data-id="15-2andar_final_corredor">
-        <li class="text">2andar_final_corredor</li>
-      </a>
-    
-      <a href="javascript:void(0)" class="scene" data-id="16-2andar_corredor_espelhado">
-        <li class="text">2andar_corredor_espelhado</li>
-      </a>
-    
-      <a href="javascript:void(0)" class="scene" data-id="17-2andar_entrada_sala">
-        <li class="text">2andar_entrada_sala</li>
-      </a>
-    
-      <a href="javascript:void(0)" class="scene" data-id="18-2andar_entrada_janelao">
-        <li class="text">2andar_entrada_janelao</li>
-      </a>
-    
-      <a href="javascript:void(0)" class="scene" data-id="19-2andar_janelao">
-        <li class="text">2andar_janelao</li>
-      </a>
-    
-  </ul>
-</div>
+      if (isVR) {
+        // Mostra o botão no mobile / Quest
+        btn.style.display = "block";
+        btn.onclick = () => {
+          enableGyroscope();
+          btn.style.display = "none";
+        };
+      } else {
+        // Ativa automaticamente no desktop
+        enableGyroscope();
+      }
+    });
+  </script>
 
-<div id="titleBar">
-  <h1 class="sceneName"></h1>
-</div>
+  <!-- ====== LISTA DE CENAS ====== -->
+  <div id="sceneList">
+    <ul class="scenes">
+      <a href="javascript:void(0)" class="scene" data-id="0-entrada_tarde"><li class="text">entrada_tarde</li></a>
+      <a href="javascript:void(0)" class="scene" data-id="1-terreo_entrada"><li class="text">terreo_entrada</li></a>
+      <a href="javascript:void(0)" class="scene" data-id="2-salao_geral"><li class="text">salao_geral</li></a>
+      <a href="javascript:void(0)" class="scene" data-id="3-terreo_elevador"><li class="text">terreo_elevador</li></a>
+      <a href="javascript:void(0)" class="scene" data-id="4-terreo_corredor1"><li class="text">terreo_corredor1</li></a>
+      <a href="javascript:void(0)" class="scene" data-id="5-terreo_corredor2"><li class="text">terreo_corredor2</li></a>
+      <a href="javascript:void(0)" class="scene" data-id="6-1andar_entrada"><li class="text">1andar_entrada</li></a>
+      <a href="javascript:void(0)" class="scene" data-id="7-1andar_meio_corredor"><li class="text">1andar_meio_corredor</li></a>
+      <a href="javascript:void(0)" class="scene" data-id="8-1andar_corredor_cubiculo"><li class="text">1andar_corredor_cubiculo</li></a>
+      <a href="javascript:void(0)" class="scene" data-id="9-1andar_cubiculos"><li class="text">1andar_cubiculos</li></a>
+      <a href="javascript:void(0)" class="scene" data-id="10-1andar_finalcorredor1"><li class="text">1andar_finalcorredor1</li></a>
+      <a href="javascript:void(0)" class="scene" data-id="11-1andar_finalcorredor2"><li class="text">1andar_finalcorredor2</li></a>
+      <a href="javascript:void(0)" class="scene" data-id="12-1andar_finalcorredor_elevador"><li class="text">1andar_finalcorredor_elevador</li></a>
+      <a href="javascript:void(0)" class="scene" data-id="13-2andar_entrada"><li class="text">2andar_entrada</li></a>
+      <a href="javascript:void(0)" class="scene" data-id="14-2andar_corredor_elevador"><li class="text">2andar_corredor_elevador</li></a>
+      <a href="javascript:void(0)" class="scene" data-id="15-2andar_final_corredor"><li class="text">2andar_final_corredor</li></a>
+      <a href="javascript:void(0)" class="scene" data-id="16-2andar_corredor_espelhado"><li class="text">2andar_corredor_espelhado</li></a>
+      <a href="javascript:void(0)" class="scene" data-id="17-2andar_entrada_sala"><li class="text">2andar_entrada_sala</li></a>
+      <a href="javascript:void(0)" class="scene" data-id="18-2andar_entrada_janelao"><li class="text">2andar_entrada_janelao</li></a>
+      <a href="javascript:void(0)" class="scene" data-id="19-2andar_janelao"><li class="text">2andar_janelao</li></a>
+    </ul>
+  </div>
 
-<a href="javascript:void(0)" id="autorotateToggle">
-  <img class="icon off" src="img/play.png">
-  <img class="icon on" src="img/pause.png">
-</a>
+  <!-- Barra de título -->
+  <div id="titleBar">
+    <h1 class="sceneName"></h1>
+  </div>
 
-<a href="javascript:void(0)" id="fullscreenToggle">
-  <img class="icon off" src="img/fullscreen.png">
-  <img class="icon on" src="img/windowed.png">
-</a>
+  <!-- Controles padrão -->
+  <a href="javascript:void(0)" id="autorotateToggle">
+    <img class="icon off" src="img/play.png">
+    <img class="icon on" src="img/pause.png">
+  </a>
 
-<a href="javascript:void(0)" id="sceneListToggle">
-  <img class="icon off" src="img/expand.png">
-  <img class="icon on" src="img/collapse.png">
-</a>
+  <a href="javascript:void(0)" id="fullscreenToggle">
+    <img class="icon off" src="img/fullscreen.png">
+    <img class="icon on" src="img/windowed.png">
+  </a>
 
-<a href="javascript:void(0)" id="viewUp" class="viewControlButton viewControlButton-1">
-  <img class="icon" src="img/up.png">
-</a>
-<a href="javascript:void(0)" id="viewDown" class="viewControlButton viewControlButton-2">
-  <img class="icon" src="img/down.png">
-</a>
-<a href="javascript:void(0)" id="viewLeft" class="viewControlButton viewControlButton-3">
-  <img class="icon" src="img/left.png">
-</a>
-<a href="javascript:void(0)" id="viewRight" class="viewControlButton viewControlButton-4">
-  <img class="icon" src="img/right.png">
-</a>
-<a href="javascript:void(0)" id="viewIn" class="viewControlButton viewControlButton-5">
-  <img class="icon" src="img/plus.png">
-</a>
-<a href="javascript:void(0)" id="viewOut" class="viewControlButton viewControlButton-6">
-  <img class="icon" src="img/minus.png">
-</a>
+  <a href="javascript:void(0)" id="sceneListToggle">
+    <img class="icon off" src="img/expand.png">
+    <img class="icon on" src="img/collapse.png">
+  </a>
 
-<script src="vendor/screenfull.min.js" ></script>
-<script src="vendor/bowser.min.js" ></script>
-<script src="vendor/marzipano.js" ></script>
+  <!-- Controles de movimento -->
+  <a href="javascript:void(0)" id="viewUp" class="viewControlButton viewControlButton-1"><img class="icon" src="img/up.png"></a>
+  <a href="javascript:void(0)" id="viewDown" class="viewControlButton viewControlButton-2"><img class="icon" src="img/down.png"></a>
+  <a href="javascript:void(0)" id="viewLeft" class="viewControlButton viewControlButton-3"><img class="icon" src="img/left.png"></a>
+  <a href="javascript:void(0)" id="viewRight" class="viewControlButton viewControlButton-4"><img class="icon" src="img/right.png"></a>
+  <a href="javascript:void(0)" id="viewIn" class="viewControlButton viewControlButton-5"><img class="icon" src="img/plus.png"></a>
+  <a href="javascript:void(0)" id="viewOut" class="viewControlButton viewControlButton-6"><img class="icon" src="img/minus.png"></a>
 
-<script src="data.js"></script>
-<script src="index.js"></script>
+  <!-- Bibliotecas -->
+  <script src="vendor/screenfull.min.js"></script>
+  <script src="vendor/bowser.min.js"></script>
+  <script src="vendor/marzipano.js"></script>
+  <script src="data.js"></script>
+  <script src="index.js"></script>
 
-<button id="enterVRButton" style="
-display: none;
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  z-index: 9999;
-  background: #0a3d5a;
-  color: white;
-  border: none;
-  padding: 12px 18px;
-  border-radius: 10px;
-  font-size: 16px;
-  cursor: pointer;
-">
-  🥽 Entrar em VR
-</button>
+  <!-- ✅ Botão exibido no Meta Quest / Celular -->
+  <button id="enterVRButton" style="
+    display: none;
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    background: #0a3d5a;
+    color: white;
+    border: none;
+    padding: 12px 18px;
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+  ">
+    🥽 Entrar em VR
+  </button>
 </body>
 </html>
