@@ -20,8 +20,8 @@
 - [x] Botão principal “Iniciar Tour Virtual”
 - [x] Adicionar **hover animado** (leve `scale(1.05)` + sombra)
 - [x] Criar **transição suave (scroll ou route)** ao clicar no botão
-- [ ] Inserir **efeito de brilho** ou **gradiente animado** no hover
-- [ ] Revisar contraste do botão em telas OLED
+- [x] Inserir **efeito de brilho** ou **gradiente animado** no hover
+- [x] Revisar contraste do botão em telas OLED
 
 ---
 
@@ -42,7 +42,7 @@
 - [ ] Testar desempenho no **Vercel** e **AWS EC2**
 - [ ] Adicionar **lazy loading** nas seções abaixo do fold
 - [x] Ajustar **viewport meta tags** para compatibilidade VR
-- [ ] Testar funcionamento no navegador padrão do Meta Quest
+- [x] Testar funcionamento no navegador padrão do Meta Quest
 - [ ] Adicionar **detecção automática de dispositivo** (VR / mobile / PC)
 ---
 
@@ -78,8 +78,8 @@
 ---
 ## testes
 
--[ ]  teste do giroscopio no meta quest
-- [ ] testar conecçao por  sem fio
+-[ ]  teste do giroscopio no meta quest ( 11/11)
+- [x] testar conecçao por  sem fio
 - [ ] 
  
  ## o que precisa baixar 
@@ -88,7 +88,7 @@
  -[ ] meta quest link
 
 ### 📅 Última atualização
-**Data:** `09/11/25`  
+**Data:** `10/11/25`  
 **Responsável:** `Matheus Coelho`
 
 ---

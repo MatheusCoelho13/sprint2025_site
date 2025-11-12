@@ -44,10 +44,32 @@ O projeto agora está:
 - logo normal 
 - otimizado 
 
+# 🗓️ Atualização — 10/11/2025  
 
-
-### 🧾 Versão 1.9.4
+### 🧾 Versão 1.9.5 - 1.9.5.1
  -correção no giroscopio na parte do celular
   
- ### 👩‍💻 Bugs ##
+ # 👩‍💻 Bugs #
  -resposabilidade na parte do menu ( logo )
+ - carregamento dinamico  do tour virtual
+  
+  ## Correçao de bug
+-  giroscopio funcional
+  
+### 🧾 Versão 1.9.51
+ -correção do bug  das versão anterior
+
+ ## Corrigido  ##
+ - logo normal 
+ -  carregamento dinamico + otimização
+ -   novas documentaçao para a infomação
+  
+
+  # 🗓️ Atualização — 11/11/2025 
+   ### 🧾 Versão 1.9.6
+   
+   
+## 🧩 Refatoração e Otimizações
+- **Código refatorado** para melhor legibilidade, desempenho e organização. (Menu)
+- **Correção de bug** no giroscópio durante o uso em dispositivos Meta Quest.  
+- **Correção na logo** ->a logo esta sendo visivel em todas as plataformas

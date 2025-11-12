@@ -13,7 +13,7 @@ import { useEffect } from "react";
 import Tour from "./pages/tour";
 import React from "react";
 import TextWriting from "./components/modules/Text_writting";
-import Logo from "./assets/Logo.png";
+import { Menu } from "./components/menu";
 /**
  * 🔁 Força uma barra final ("/") nas URLs — ex: "/tour" → "/tour/"
  */
@@ -66,30 +66,12 @@ function Home() {
   return (
     <>
       <AnimatedTechBackground />
-      {/* TODO: REFATORAR ISSO :( */}
+      
       <div className="relative w-full h-full flex flex-col items-center justify-center overflow-hidden">
         <div className="relative z-20 w-full">
-          {/* Header */}
-          <header className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-[#0a3d5a]/20 border-b border-[#1a5a7e]/30
-          h-21">
-            <div className="container mx-auto px-6 py-4 flex justify-between">
-              <motion.div
-                className="flex items-center gap-2"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-              >
-                <Link to="/" className="text-white text-xl font-bold">
-                  <img
-                    src={Logo}
-                    alt="Logo"
-                    className=" relative right-20 bottom-2"
-                    width={90}
-                    height={90} />
-                  
-                </Link>
-              </motion.div>
-            </div>
-          </header>
+          
+         <Menu />
+        
 
           {/* Conteúdo principal */}
           <div className="relative z-10 text-center text-white px-6 pt-28">
