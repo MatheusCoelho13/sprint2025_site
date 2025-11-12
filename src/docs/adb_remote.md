@@ -23,7 +23,7 @@ No visor do Quest, **aceite a permissão de depuração USB**.
 
 ---
 
-## 🌐 3️⃣ Ativar modo TCP/IP no Quest
+## 🌐 3️⃣ Ativar modo TCP/IP no Questa
 Ainda com o cabo conectado, rode o comando abaixo para habilitar o modo de rede na porta 5555:
 
 ```bash
@@ -54,7 +54,7 @@ Há duas formas de ver o IP:
 Desconecte o cabo USB e conecte-se pela rede Wi-Fi usando o IP do Quest:
 
 ```bash
-adb connect 192.168.35.91:5555
+adb connect 192.168.35.1:5555
 ```
 
 Saída esperada:
