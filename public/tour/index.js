@@ -1,276 +1,168 @@
 'use strict';
 
 (function () {
-  var Marzipano = window.Marzipano;
-  var bowser = window.bowser;
-  var screenfull = window.screenfull;
-  var data = window.APP_DATA;
+  const Marzipano = window.Marzipano;
+  const screenfull = window.screenfull;
+  const data = window.APP_DATA;
 
-  // ==============================
-  // 🔹 ELEMENTOS DOM
-  // ==============================
-  var panoElement = document.querySelector('#pano');
-  var sceneNameElement = document.querySelector('#titleBar .sceneName');
-  var sceneListElement = document.querySelector('#sceneList');
-  var sceneElements = document.querySelectorAll('#sceneList .scene');
-  var sceneListToggleElement = document.querySelector('#sceneListToggle');
-  var autorotateToggleElement = document.querySelector('#autorotateToggle');
-  var fullscreenToggleElement = document.querySelector('#fullscreenToggle');
+  // ===============================
+  // 🔹 VIEWER PRINCIPAL
+  // ===============================
+  const panoElement = document.querySelector('#pano');
+  const viewer = new Marzipano.Viewer(panoElement, {
+    controls: { mouseViewMode: data.settings.mouseViewMode },
+  });
+  const controls = viewer.controls();
 
-  // ==============================
-  // 🔹 VIEWER
-  // ==============================
-  var viewerOpts = { controls: { mouseViewMode: data.settings.mouseViewMode } };
-  var viewer = new Marzipano.Viewer(panoElement, viewerOpts);
-  var controls = viewer.controls();
-
-  // ==============================
-  // 🔹 FUNÇÕES PRINCIPAIS
-  // ==============================
-  function sanitize(s) {
-    return s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;');
-  }
-
-  function switchScene(scene) {
-    stopAutorotate();
-    scene.view.setParameters(scene.data.initialViewParameters);
-    scene.scene.switchTo();
-    startAutorotate();
-    updateSceneName(scene);
-  }
-
-  function updateSceneName(scene) {
-    sceneNameElement.innerHTML = sanitize(scene.data.name);
-  }
-
-  // ==============================
-  // 🔹 HOTSPOTS
-  // ==============================
-  function createLinkHotspotElement(hotspot) {
-    var wrapper = document.createElement('div');
-    wrapper.classList.add('hotspot', 'link-hotspot');
-    var icon = document.createElement('img');
-    icon.src = 'img/link.png';
-    icon.classList.add('link-hotspot-icon');
-    icon.style.transform = 'rotate(' + hotspot.rotation + 'rad)';
-    wrapper.appendChild(icon);
-
-    wrapper.addEventListener('click', function () {
-      switchScene(findSceneById(hotspot.target));
-    });
-
-    var tooltip = document.createElement('div');
-    tooltip.classList.add('hotspot-tooltip', 'link-hotspot-tooltip');
-    tooltip.innerHTML = findSceneDataById(hotspot.target).name;
-    wrapper.appendChild(tooltip);
-
-    return wrapper;
-  }
-
-  function createInfoHotspotElement(hotspot) {
-    var wrapper = document.createElement('div');
-    wrapper.classList.add('hotspot', 'info-hotspot');
-
-    var header = document.createElement('div');
-    header.classList.add('info-hotspot-header');
-
-    var icon = document.createElement('img');
-    icon.src = 'img/info.png';
-    icon.classList.add('info-hotspot-icon');
-    header.appendChild(icon);
-
-    var title = document.createElement('div');
-    title.classList.add('info-hotspot-title');
-    title.innerHTML = hotspot.title;
-    header.appendChild(title);
-    wrapper.appendChild(header);
-
-    var text = document.createElement('div');
-    text.classList.add('info-hotspot-text');
-    text.innerHTML = hotspot.text;
-    wrapper.appendChild(text);
-    return wrapper;
-  }
-
-  function findSceneById(id) {
-    return scenes.find((s) => s.data.id === id) || null;
-  }
-
-  function findSceneDataById(id) {
-    return data.scenes.find((s) => s.id === id) || null;
-  }
-
-  // ==============================
-  // 🔹 CRIAÇÃO DAS CENAS
-  // ==============================
-  var scenes = data.scenes.map(function (data) {
-    var urlPrefix = 'tiles';
-    var source = Marzipano.ImageUrlSource.fromString(
-      urlPrefix + '/' + data.id + '/{z}/{f}/{y}/{x}.jpg',
-      { cubeMapPreviewUrl: urlPrefix + '/' + data.id + '/preview.jpg' }
+  // ===============================
+  // 🔹 CENAS
+  // ===============================
+  const scenes = data.scenes.map((sceneData) => {
+    const source = Marzipano.ImageUrlSource.fromString(
+      `tiles/${sceneData.id}/{z}/{f}/{y}/{x}.jpg`,
+      { cubeMapPreviewUrl: `tiles/${sceneData.id}/preview.jpg` }
     );
-    var geometry = new Marzipano.CubeGeometry(data.levels);
-    var limiter = Marzipano.RectilinearView.limit.traditional(
-      data.faceSize, 100 * Math.PI / 180, 120 * Math.PI / 180
+
+    const geometry = new Marzipano.CubeGeometry(sceneData.levels);
+    const limiter = Marzipano.RectilinearView.limit.traditional(
+      sceneData.faceSize,
+      (100 * Math.PI) / 180,
+      (120 * Math.PI) / 180
     );
-    var view = new Marzipano.RectilinearView(data.initialViewParameters, limiter);
-    var scene = viewer.createScene({
-      source: source,
-      geometry: geometry,
-      view: view,
-      pinFirstLevel: true
-    });
 
-    // Hotspots de navegação
-    if (Array.isArray(data.linkHotspots)) {
-      data.linkHotspots.forEach(function (hotspot) {
-        var element = createLinkHotspotElement(hotspot);
-        scene.hotspotContainer().createHotspot(element, {
-          yaw: hotspot.yaw,
-          pitch: hotspot.pitch
-        });
-      });
-    }
-
-    // Hotspots de informação
-    if (Array.isArray(data.infoHotspots)) {
-      data.infoHotspots.forEach(function (hotspot) {
-        var element = createInfoHotspotElement(hotspot);
-        scene.hotspotContainer().createHotspot(element, {
-          yaw: hotspot.yaw,
-          pitch: hotspot.pitch
-        });
-      });
-    }
-
-    return { data: data, scene: scene, view: view };
+    const view = new Marzipano.RectilinearView(sceneData.initialViewParameters, limiter);
+    const scene = viewer.createScene({ source, geometry, view, pinFirstLevel: true });
+    return { data: sceneData, scene, view };
   });
 
-  // ==============================
-  // 🔹 AUTOROTAÇÃO
-  // ==============================
-  var autorotate = Marzipano.autorotate({
-    yawSpeed: 0.03,
-    targetPitch: 0,
-    targetFov: Math.PI / 2
-  });
-
-  function startAutorotate() {
-    if (!autorotateToggleElement.classList.contains('enabled')) return;
-    viewer.startMovement(autorotate);
-    viewer.setIdleMovement(3000, autorotate);
-  }
-
-  function stopAutorotate() {
-    viewer.stopMovement();
-    viewer.setIdleMovement(Infinity);
-  }
-
-  function toggleAutorotate() {
-    autorotateToggleElement.classList.toggle('enabled');
-    if (autorotateToggleElement.classList.contains('enabled'))
-      startAutorotate();
-    else
-      stopAutorotate();
-  }
-
-  autorotateToggleElement.addEventListener('click', toggleAutorotate);
-
-  // ==============================
-  // 🔹 FULLSCREEN
-  // ==============================
-  if (screenfull.enabled && data.settings.fullscreenButton) {
-    fullscreenToggleElement.addEventListener('click', function () {
-      screenfull.toggle();
-    });
-    screenfull.on('change', function () {
-      fullscreenToggleElement.classList.toggle('enabled', screenfull.isFullscreen);
-    });
-  }
-
-  // ==============================
-  // 🔹 GIROSCÓPIO (CORRIGIDO)
-  // ==============================
-  var deviceOrientationControl = null;
+  // ===============================
+  // 🔹 CONTROLE DE GIROSCÓPIO
+  // ===============================
+  let deviceOrientationControl = null;
 
   if (typeof Marzipano.DeviceOrientationControlMethod === 'function') {
     try {
       deviceOrientationControl = new Marzipano.DeviceOrientationControlMethod();
     } catch (e) {
-      console.warn("⚠️ Falha ao criar DeviceOrientationControlMethod:", e);
-      deviceOrientationControl = null;
+      console.warn('⚠️ Falha ao criar DeviceOrientationControlMethod:', e);
     }
   }
 
   async function enableGyroscope() {
     if (!deviceOrientationControl) {
-      console.warn("⚠️ DeviceOrientationControlMethod não disponível no Marzipano.");
+      console.warn('⚠️ Giroscópio não disponível neste dispositivo.');
       return;
     }
 
     try {
       if (
-        typeof DeviceOrientationEvent !== "undefined" &&
-        typeof DeviceOrientationEvent.requestPermission === "function"
+        typeof DeviceOrientationEvent !== 'undefined' &&
+        typeof DeviceOrientationEvent.requestPermission === 'function'
       ) {
         const permission = await DeviceOrientationEvent.requestPermission();
-        if (permission === "granted") {
-          controls.registerMethod("device", deviceOrientationControl);
-          controls.enableMethod("device");
-          alert("✅ Giroscópio ativado com sucesso!");
+        if (permission === 'granted') {
+          controls.registerMethod('device', deviceOrientationControl);
+          controls.enableMethod('device');
+          console.log('✅ Giroscópio ativado (com permissão).');
         } else {
-          alert("❌ Permissão negada. Vá nas configurações do navegador e ative o sensor de movimento.");
+          alert('❌ Permissão negada. Vá em Configurações → Movimento do Sensor.');
         }
       } else {
-        // Wolvic, Meta Quest e Android antigos
-        controls.registerMethod("device", deviceOrientationControl);
-        controls.enableMethod("device");
-        console.log("✅ Giroscópio ativado automaticamente (sem permissão explícita).");
+        // Wolvic, Meta Quest, Android antigos
+        controls.registerMethod('device', deviceOrientationControl);
+        controls.enableMethod('device');
+        console.log('✅ Giroscópio ativado automaticamente.');
       }
     } catch (err) {
-      console.error("❌ Erro ao ativar giroscópio:", err);
+      console.error('❌ Erro ao ativar giroscópio:', err);
     }
   }
 
-  // ==============================
-  // 🔹 ATIVAÇÃO DO GIROSCÓPIO
-  // ==============================
-  window.addEventListener("load", function () {
-    const isMobile = /Android|iPhone|iPad|OculusBrowser|Meta Quest/i.test(navigator.userAgent);
+  // ===============================
+  // 🔹 SPLASH / BOTÃO DE ENTRADA
+  // ===============================
+  function createStartOverlay() {
+    const overlay = document.createElement('div');
+    overlay.id = 'startOverlay';
+    Object.assign(overlay.style, {
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      width: '100%',
+      height: '100%',
+      background: 'rgba(0,0,0,0.9)',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      zIndex: 9999,
+      transition: 'opacity 0.6s ease',
+    });
 
-    if (isMobile) {
-      console.log("📱 Dispositivo mobile detectado — aguardando toque para ativar giroscópio.");
+    const logo = document.createElement('h1');
+    logo.textContent = 'Bioproject 360°';
+    Object.assign(logo.style, {
+      color: '#e8b443',
+      fontFamily: 'Helvetica, Arial, sans-serif',
+      fontWeight: '700',
+      fontSize: '32px',
+      marginBottom: '20px',
+      textAlign: 'center',
+      textShadow: '0 0 20px rgba(255,255,255,0.3)',
+    });
 
-      const btn = document.createElement("button");
-      btn.textContent = "🥽 Ativar Giroscópio";
-      Object.assign(btn.style, {
-        position: "fixed",
-        bottom: "20px",
-        right: "20px",
-        zIndex: 9999,
-        background: "#0a3d5a",
-        color: "#fff",
-        border: "none",
-        padding: "10px 16px",
-        borderRadius: "10px",
-        fontSize: "14px",
-        cursor: "pointer",
-      });
+    const btn = document.createElement('button');
+    btn.textContent = '🎥 Entrar no Tour 360°';
+    Object.assign(btn.style, {
+      background: '#0a3d5a',
+      color: '#fff',
+      border: 'none',
+      borderRadius: '12px',
+      padding: '16px 28px',
+      fontSize: '18px',
+      cursor: 'pointer',
+      pointerEvents: 'auto',
+      transition: 'transform 0.2s ease, opacity 0.2s ease',
+      boxShadow: '0 0 15px rgba(0,0,0,0.3)',
+    });
 
-      btn.addEventListener("click", function () {
-        enableGyroscope();
-        btn.remove();
-      });
+    btn.addEventListener('mouseenter', () => (btn.style.transform = 'scale(1.05)'));
+    btn.addEventListener('mouseleave', () => (btn.style.transform = 'scale(1)'));
 
-      document.body.appendChild(btn);
-    } else {
-      // Ativa automaticamente em desktop / ambiente de testes
+    btn.onclick = () => {
+      overlay.style.opacity = '0';
+      setTimeout(() => overlay.remove(), 600);
+      scenes[0].scene.switchTo();
       enableGyroscope();
+    };
+
+    overlay.appendChild(logo);
+    overlay.appendChild(btn);
+    document.body.appendChild(overlay);
+  }
+
+  // ===============================
+  // 🔹 DETECÇÃO AUTOMÁTICA
+  // ===============================
+  window.addEventListener('load', () => {
+    const isWolvic = /Wolvic|Igalia/i.test(navigator.userAgent);
+    const isMeta = /OculusBrowser|Meta Quest/i.test(navigator.userAgent);
+    const isMobile = /Android|iPhone|iPad/i.test(navigator.userAgent);
+
+    // Sempre carrega a primeira cena
+    scenes[0].scene.switchTo();
+
+    if (isWolvic) {
+      // Wolvic já ativa o sensor automaticamente
+      console.log('🌐 Wolvic detectado — iniciando automaticamente');
+      enableGyroscope();
+    } else if (isMeta || isMobile) {
+      // Meta Quest / Celulares: exige interação
+      console.log('🥽 Meta Quest / Mobile detectado — aguardando clique');
+      createStartOverlay();
+    } else {
+      // Desktop
+      console.log('💻 Modo desktop — giroscópio desativado');
     }
   });
-
-  // ==============================
-  // 🔹 INICIALIZAÇÃO
-  // ==============================
-  switchScene(scenes[0]);
 })();
