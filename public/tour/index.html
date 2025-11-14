@@ -29,50 +29,7 @@
   <!-- Contêiner principal do panorama -->
   <div id="pano"></div>
 
-  <!-- ✅ Script para controle do giroscópio -->
-  <script>
-    function handleOrientation(e) {
-      window.__lastDeviceOrientation = e;
-    }
-
-    async function enableGyroscope() {
-      try {
-        if (typeof DeviceOrientationEvent !== "undefined" &&
-            typeof DeviceOrientationEvent.requestPermission === "function") {
-          const permission = await DeviceOrientationEvent.requestPermission();
-          if (permission === "granted") {
-            window.addEventListener("deviceorientation", handleOrientation);
-            alert("✅ Giroscópio ativado!");
-          } else {
-            alert("❌ Permissão negada. Vá em Configurações → Movimento do Sensor.");
-          }
-        } else {
-          // Wolvic, Meta Quest, Android antigos
-          window.addEventListener("deviceorientation", handleOrientation);
-          console.log("✅ Giroscópio ativado automaticamente.");
-        }
-      } catch (err) {
-        console.error("Erro ao ativar giroscópio:", err);
-      }
-    }
-
-    window.addEventListener("load", () => {
-      const isVR = /OculusBrowser|Meta Quest|Android|iPhone|iPad/i.test(navigator.userAgent);
-      const btn = document.getElementById("enterVRButton");
-
-      if (isVR) {
-        // Mostra o botão no mobile / Quest
-        btn.style.display = "block";
-        btn.onclick = () => {
-          enableGyroscope();
-          btn.style.display = "none";
-        };
-      } else {
-        // Ativa automaticamente no desktop
-        enableGyroscope();
-      }
-    });
-  </script>
+  
 
   <!-- ====== LISTA DE CENAS ====== -->
   <div id="sceneList">
@@ -103,7 +60,7 @@
   <!-- Barra de título -->
   <div id="titleBar">
     <h1 class="sceneName"></h1>
-  </div>
+  </div> 
 
   <!-- Controles padrão -->
   <a href="javascript:void(0)" id="autorotateToggle">
@@ -119,7 +76,7 @@
   <a href="javascript:void(0)" id="sceneListToggle">
     <img class="icon off" src="img/expand.png">
     <img class="icon on" src="img/collapse.png">
-  </a>
+  </a> 
 
   <!-- Controles de movimento -->
   <a href="javascript:void(0)" id="viewUp" class="viewControlButton viewControlButton-1"><img class="icon" src="img/up.png"></a>

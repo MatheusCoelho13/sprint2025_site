@@ -26,7 +26,7 @@ const Title: React.FC = () => {
         className="text-center"
       >
         <h1 className="text-7xl md:text-9xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#e8b443] via-[#3b7d46] to-[#1a5a7e] mb-6 animate-pulse drop-shadow-lg">
-          BIOTIca
+          BIOTIC
         </h1>
       </motion.div>
 

@@ -14,6 +14,7 @@ import Tour from "./pages/tour";
 import React from "react";
 import TextWriting from "./components/modules/Text_writting";
 import { Menu } from "./components/menu";
+import { SobreTime } from "./components/ui/sobre_time";
 /**
  * 🔁 Força uma barra final ("/") nas URLs — ex: "/tour" → "/tour/"
  */
@@ -132,7 +133,19 @@ function Home() {
                   >
                     <Cards {...feature} index={index} />
                   </motion.div>
+
                 ))}
+              </div>
+              {/*  sobre nos  */}
+              <div className="pt-12 gap-8 max-w-6xl mx-auto">
+                <motion.div
+                  initial={{ opacity: 0, y: 50 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.7 }}
+                  viewport={{ once: true }}
+                >
+                  <SobreTime />
+                </motion.div>
               </div>
             </div>
           </section>

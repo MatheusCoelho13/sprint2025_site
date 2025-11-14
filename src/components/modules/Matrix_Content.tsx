@@ -52,7 +52,7 @@ const MatrixCanvas: React.FC = () => {
 
 
         // 4. Lógica de Reinício
-        if (drops[i] * FONT_SIZE > canvas.height && Math.random() > 0.98) {
+        if (drops[i] * FONT_SIZE > canvas.height && Math.random() > 0.18) {
           drops[i] = 0; 
         }
 
@@ -62,7 +62,7 @@ const MatrixCanvas: React.FC = () => {
     };
 
     // Usa setInterval para animar
-    const intervalId = setInterval(draw, 60); 
+    const intervalId = setInterval(draw, 20); 
 
     // Limpeza para evitar memory leaks
     return () => clearInterval(intervalId);
