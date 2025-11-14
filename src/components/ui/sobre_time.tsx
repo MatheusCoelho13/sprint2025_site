@@ -7,7 +7,7 @@ import { Linkedin, Mail, Pi } from "lucide-react";
 import Matheus from "../../assets/matheusc.jpg";
 import Max from "../../assets/max.jpg";
 import Pietro from "../../assets/pietro.jpg";
-import Moises from "../../assets/moises.jpg";
+import Moises from "../../assets/Moises.jpg";
 
 
 
