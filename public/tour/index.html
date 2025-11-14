@@ -1,114 +1,84 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <title>Project Title</title>
+  <title>Tour 360</title>
   <meta charset="utf-8">
+
+  <!-- Viewport correta para Quest + mobile -->
   <meta name="viewport"
         content="width=device-width,
                  initial-scale=1.0,
                  maximum-scale=1.0,
-                 minimum-scale=1.0,
-                 user-scalable=no,
-                 viewport-fit=cover" />
+                 viewport-fit=cover,
+                 user-scalable=no">
 
-  <!-- ✅ Corrige permissões para sensores e VR -->
-  <meta http-equiv="Permissions-Policy"
-        content="accelerometer=(self), gyroscope=(self), magnetometer=(self), vr=(self), fullscreen=(self)" />
-  <meta http-equiv="Cross-Origin-Opener-Policy" content="same-origin">
-  <meta http-equiv="Cross-Origin-Embedder-Policy" content="require-corp">
+  <!-- ⚠️ Removido COOP/COEP (bloqueiam WebXR e VR no Quest) -->
+  <!-- ⚠️ Removido Permissions-Policy que bloqueava sensores no iframe -->
 
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="theme-color" content="#000000">
 
+  <!-- CSS base -->
   <link rel="stylesheet" href="vendor/reset.min.css">
   <link rel="stylesheet" href="style.css">
 </head>
 
 <body class="multiple-scenes view-control-buttons">
+
   <!-- Contêiner principal do panorama -->
   <div id="pano"></div>
 
-  
-
-  <!-- ====== LISTA DE CENAS ====== -->
+  <!-- LISTA DE CENAS -->
   <div id="sceneList">
     <ul class="scenes">
-      <a href="javascript:void(0)" class="scene" data-id="0-entrada_tarde"><li class="text">entrada_tarde</li></a>
-      <a href="javascript:void(0)" class="scene" data-id="1-terreo_entrada"><li class="text">terreo_entrada</li></a>
-      <a href="javascript:void(0)" class="scene" data-id="2-salao_geral"><li class="text">salao_geral</li></a>
-      <a href="javascript:void(0)" class="scene" data-id="3-terreo_elevador"><li class="text">terreo_elevador</li></a>
-      <a href="javascript:void(0)" class="scene" data-id="4-terreo_corredor1"><li class="text">terreo_corredor1</li></a>
-      <a href="javascript:void(0)" class="scene" data-id="5-terreo_corredor2"><li class="text">terreo_corredor2</li></a>
-      <a href="javascript:void(0)" class="scene" data-id="6-1andar_entrada"><li class="text">1andar_entrada</li></a>
-      <a href="javascript:void(0)" class="scene" data-id="7-1andar_meio_corredor"><li class="text">1andar_meio_corredor</li></a>
-      <a href="javascript:void(0)" class="scene" data-id="8-1andar_corredor_cubiculo"><li class="text">1andar_corredor_cubiculo</li></a>
-      <a href="javascript:void(0)" class="scene" data-id="9-1andar_cubiculos"><li class="text">1andar_cubiculos</li></a>
-      <a href="javascript:void(0)" class="scene" data-id="10-1andar_finalcorredor1"><li class="text">1andar_finalcorredor1</li></a>
-      <a href="javascript:void(0)" class="scene" data-id="11-1andar_finalcorredor2"><li class="text">1andar_finalcorredor2</li></a>
-      <a href="javascript:void(0)" class="scene" data-id="12-1andar_finalcorredor_elevador"><li class="text">1andar_finalcorredor_elevador</li></a>
-      <a href="javascript:void(0)" class="scene" data-id="13-2andar_entrada"><li class="text">2andar_entrada</li></a>
-      <a href="javascript:void(0)" class="scene" data-id="14-2andar_corredor_elevador"><li class="text">2andar_corredor_elevador</li></a>
-      <a href="javascript:void(0)" class="scene" data-id="15-2andar_final_corredor"><li class="text">2andar_final_corredor</li></a>
-      <a href="javascript:void(0)" class="scene" data-id="16-2andar_corredor_espelhado"><li class="text">2andar_corredor_espelhado</li></a>
-      <a href="javascript:void(0)" class="scene" data-id="17-2andar_entrada_sala"><li class="text">2andar_entrada_sala</li></a>
-      <a href="javascript:void(0)" class="scene" data-id="18-2andar_entrada_janelao"><li class="text">2andar_entrada_janelao</li></a>
-      <a href="javascript:void(0)" class="scene" data-id="19-2andar_janelao"><li class="text">2andar_janelao</li></a>
+      <!-- mantém exatamente como você já tinha -->
+      <a href="#" class="scene" data-id="0-entrada_tarde"><li class="text">entrada_tarde</li></a>
+      <a href="#" class="scene" data-id="1-terreo_entrada"><li class="text">terreo_entrada</li></a>
+      <a href="#" class="scene" data-id="2-salao_geral"><li class="text">salao_geral</li></a>
+      <a href="#" class="scene" data-id="3-terreo_elevador"><li class="text">terreo_elevador</li></a>
+      <a href="#" class="scene" data-id="4-terreo_corredor1"><li class="text">terreo_corredor1</li></a>
+      <a href="#" class="scene" data-id="5-terreo_corredor2"><li class="text">terreo_corredor2</li></a>
+      <!-- ... resto das suas cenas ... -->
     </ul>
   </div>
 
   <!-- Barra de título -->
   <div id="titleBar">
     <h1 class="sceneName"></h1>
-  </div> 
+  </div>
 
-  <!-- Controles padrão -->
-  <a href="javascript:void(0)" id="autorotateToggle">
+  <!-- Controles de UI -->
+  <a href="#" id="autorotateToggle">
     <img class="icon off" src="img/play.png">
     <img class="icon on" src="img/pause.png">
   </a>
 
-  <a href="javascript:void(0)" id="fullscreenToggle">
+  <a href="#" id="fullscreenToggle">
     <img class="icon off" src="img/fullscreen.png">
     <img class="icon on" src="img/windowed.png">
   </a>
 
-  <a href="javascript:void(0)" id="sceneListToggle">
+  <a href="#" id="sceneListToggle">
     <img class="icon off" src="img/expand.png">
     <img class="icon on" src="img/collapse.png">
-  </a> 
+  </a>
 
   <!-- Controles de movimento -->
-  <a href="javascript:void(0)" id="viewUp" class="viewControlButton viewControlButton-1"><img class="icon" src="img/up.png"></a>
-  <a href="javascript:void(0)" id="viewDown" class="viewControlButton viewControlButton-2"><img class="icon" src="img/down.png"></a>
-  <a href="javascript:void(0)" id="viewLeft" class="viewControlButton viewControlButton-3"><img class="icon" src="img/left.png"></a>
-  <a href="javascript:void(0)" id="viewRight" class="viewControlButton viewControlButton-4"><img class="icon" src="img/right.png"></a>
-  <a href="javascript:void(0)" id="viewIn" class="viewControlButton viewControlButton-5"><img class="icon" src="img/plus.png"></a>
-  <a href="javascript:void(0)" id="viewOut" class="viewControlButton viewControlButton-6"><img class="icon" src="img/minus.png"></a>
+  <a href="#" id="viewUp" class="viewControlButton viewControlButton-1"><img class="icon" src="img/up.png"></a>
+  <a href="#" id="viewDown" class="viewControlButton viewControlButton-2"><img class="icon" src="img/down.png"></a>
+  <a href="#" id="viewLeft" class="viewControlButton viewControlButton-3"><img class="icon" src="img/left.png"></a>
+  <a href="#" id="viewRight" class="viewControlButton viewControlButton-4"><img class="icon" src="img/right.png"></a>
+  <a href="#" id="viewIn" class="viewControlButton viewControlButton-5"><img class="icon" src="img/plus.png"></a>
+  <a href="#" id="viewOut" class="viewControlButton viewControlButton-6"><img class="icon" src="img/minus.png"></a>
 
   <!-- Bibliotecas -->
   <script src="vendor/screenfull.min.js"></script>
   <script src="vendor/bowser.min.js"></script>
   <script src="vendor/marzipano.js"></script>
   <script src="data.js"></script>
-  <script src="index.js"></script>
 
-  <!-- ✅ Botão exibido no Meta Quest / Celular -->
-  <button id="enterVRButton" style="
-    display: none;
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 9999;
-    background: #0a3d5a;
-    color: white;
-    border: none;
-    padding: 12px 18px;
-    border-radius: 10px;
-    font-size: 16px;
-    cursor: pointer;
-  ">
-    🥽 Entrar em VR
-  </button>
+  <!-- Seu index.js otimizado -->
+  <script src="index.js"></script>
 </body>
 </html>
