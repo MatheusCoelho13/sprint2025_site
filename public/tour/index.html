@@ -1,84 +1,55 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <title>Tour 360</title>
   <meta charset="utf-8">
+  <title>Tour 360</title>
 
-  <!-- Viewport correta para Quest + mobile -->
   <meta name="viewport"
         content="width=device-width,
                  initial-scale=1.0,
                  maximum-scale=1.0,
-                 viewport-fit=cover,
-                 user-scalable=no">
+                 user-scalable=no,
+                 viewport-fit=cover">
 
-  <!-- ⚠️ Removido COOP/COEP (bloqueiam WebXR e VR no Quest) -->
-  <!-- ⚠️ Removido Permissions-Policy que bloqueava sensores no iframe -->
-
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="theme-color" content="#000000">
 
-  <!-- CSS base -->
+  <!-- CSS -->
   <link rel="stylesheet" href="vendor/reset.min.css">
   <link rel="stylesheet" href="style.css">
 </head>
 
 <body class="multiple-scenes view-control-buttons">
 
-  <!-- Contêiner principal do panorama -->
+  <!-- Panorama -->
   <div id="pano"></div>
 
-  <!-- LISTA DE CENAS -->
+  <!-- Lista gerada automaticamente -->
   <div id="sceneList">
-    <ul class="scenes">
-      <!-- mantém exatamente como você já tinha -->
-      <a href="#" class="scene" data-id="0-entrada_tarde"><li class="text">entrada_tarde</li></a>
-      <a href="#" class="scene" data-id="1-terreo_entrada"><li class="text">terreo_entrada</li></a>
-      <a href="#" class="scene" data-id="2-salao_geral"><li class="text">salao_geral</li></a>
-      <a href="#" class="scene" data-id="3-terreo_elevador"><li class="text">terreo_elevador</li></a>
-      <a href="#" class="scene" data-id="4-terreo_corredor1"><li class="text">terreo_corredor1</li></a>
-      <a href="#" class="scene" data-id="5-terreo_corredor2"><li class="text">terreo_corredor2</li></a>
-      <!-- ... resto das suas cenas ... -->
-    </ul>
+    <ul class="scenes" id="dynamicSceneList"></ul>
   </div>
 
-  <!-- Barra de título -->
+  <!-- Título -->
   <div id="titleBar">
     <h1 class="sceneName"></h1>
   </div>
 
-  <!-- Controles de UI -->
-  <a href="#" id="autorotateToggle">
-    <img class="icon off" src="img/play.png">
-    <img class="icon on" src="img/pause.png">
-  </a>
-
+  <!-- Controles -->
   <a href="#" id="fullscreenToggle">
     <img class="icon off" src="img/fullscreen.png">
     <img class="icon on" src="img/windowed.png">
   </a>
 
-  <a href="#" id="sceneListToggle">
-    <img class="icon off" src="img/expand.png">
-    <img class="icon on" src="img/collapse.png">
-  </a>
-
-  <!-- Controles de movimento -->
-  <a href="#" id="viewUp" class="viewControlButton viewControlButton-1"><img class="icon" src="img/up.png"></a>
-  <a href="#" id="viewDown" class="viewControlButton viewControlButton-2"><img class="icon" src="img/down.png"></a>
-  <a href="#" id="viewLeft" class="viewControlButton viewControlButton-3"><img class="icon" src="img/left.png"></a>
-  <a href="#" id="viewRight" class="viewControlButton viewControlButton-4"><img class="icon" src="img/right.png"></a>
-  <a href="#" id="viewIn" class="viewControlButton viewControlButton-5"><img class="icon" src="img/plus.png"></a>
-  <a href="#" id="viewOut" class="viewControlButton viewControlButton-6"><img class="icon" src="img/minus.png"></a>
-
-  <!-- Bibliotecas -->
-  <script src="vendor/screenfull.min.js"></script>
+  <!-- Biblioteca -->
   <script src="vendor/bowser.min.js"></script>
+  <script src="vendor/screenfull.min.js"></script>
   <script src="vendor/marzipano.js"></script>
+
+  <!-- Seu data.js -->
   <script src="data.js"></script>
 
-  <!-- Seu index.js otimizado -->
+  <!-- Código principal -->
   <script src="index.js"></script>
+
 </body>
 </html>
+
