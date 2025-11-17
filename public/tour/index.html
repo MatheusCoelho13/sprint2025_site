@@ -5,51 +5,38 @@
   <title>Tour 360</title>
 
   <meta name="viewport"
-        content="width=device-width,
-                 initial-scale=1.0,
-                 maximum-scale=1.0,
-                 user-scalable=no,
-                 viewport-fit=cover">
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0,
+                 viewport-fit=cover, user-scalable=no">
 
-  <meta name="theme-color" content="#000000">
+  <meta name="theme-color" content="#000">
 
-  <!-- CSS -->
   <link rel="stylesheet" href="vendor/reset.min.css">
   <link rel="stylesheet" href="style.css">
 </head>
 
 <body class="multiple-scenes view-control-buttons">
 
-  <!-- Panorama -->
   <div id="pano"></div>
 
-  <!-- Lista gerada automaticamente -->
   <div id="sceneList">
-    <ul class="scenes" id="dynamicSceneList"></ul>
+    <ul class="scenes">
+      <!-- A lista será preenchida pelo JS -->
+    </ul>
   </div>
 
-  <!-- Título -->
   <div id="titleBar">
     <h1 class="sceneName"></h1>
   </div>
 
   <!-- Controles -->
-  <a href="#" id="fullscreenToggle">
-    <img class="icon off" src="img/fullscreen.png">
-    <img class="icon on" src="img/windowed.png">
-  </a>
+  <a href="#" id="fullscreenToggle"><img class="icon off" src="img/fullscreen.png"><img class="icon on" src="img/windowed.png"></a>
+  <a href="#" id="sceneListToggle"><img class="icon off" src="img/expand.png"><img class="icon on" src="img/collapse.png"></a>
 
-  <!-- Biblioteca -->
-  <script src="vendor/bowser.min.js"></script>
-  <script src="vendor/screenfull.min.js"></script>
   <script src="vendor/marzipano.js"></script>
-
-  <!-- Seu data.js -->
+  <script src="vendor/screenfull.min.js"></script>
+  <script src="vendor/bowser.min.js"></script>
   <script src="data.js"></script>
-
-  <!-- Código principal -->
   <script src="index.js"></script>
 
 </body>
 </html>
-
