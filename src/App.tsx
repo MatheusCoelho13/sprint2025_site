@@ -14,7 +14,7 @@ import Tour from "./pages/tour";
 import React from "react";
 import TextWriting from "./components/modules/Text_writting";
 import { Menu } from "./components/menu";
-import { SobreTime } from "./components/ui/sobre_time";
+import { SobreTime } from "./components/sobre_time";
 /**
  * 🔁 Força uma barra final ("/") nas URLs — ex: "/tour" → "/tour/"
  */

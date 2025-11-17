@@ -4,10 +4,10 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Linkedin, Mail, Pi } from "lucide-react";
 //  fotos do time
-import Matheus from "../../assets/matheusc.jpg";
-import Max from "../../assets/max.jpg";
-import Pietro from "../../assets/pietro.jpg";
-import Moises from "../../assets/Moises.jpg";
+import Matheus from "../assets/matheusc.jpg";
+import Max from "../assets/max.jpg";
+import Pietro from "../assets/pietro.jpg";
+import Moises from "../assets/Moises.jpg";
 
 
 
@@ -15,40 +15,75 @@ import Moises from "../../assets/Moises.jpg";
 
 
 export const SobreTime: React.FC = () => {
+  //!verção antiga do time ( falta a analise do time)
+  // const team = [
+  //   {
+  //     name: "Matheus Coelho Fernandes",
+  //     role: "Desenvolvedor full-stack",
+  //     image: Matheus,
+  //     bio: "Responsável pelo desenvolvimento completo do site, Foco em criação de experiências imersivas e de usuário.",
+  //     linkedin: "https://linkedin.com/in/matheuscoelhofernandes", 
+  //     email: "25101502@idp.aluno.edu.br", 
+  //   },
+  //   {
+  //     name: "Miguel Maximus",
+  //     role: "",
+  //     image: Max,
+  //     bio: "Diretor de arte",
+  //     linkedin: "https://www.linkedin.com/in/miguel-maximus-rodrigues-oliveira-4a17a531a/",
+  //     email: "#",
+  //   },
+  //   {
+  //     name: "Pietro Branco Rossi",
+  //     role: "Diretora de Design",
+  //     image: Pietro,
+  //     bio: "Gerente de projeto",
+  //     linkedin: "https://www.linkedin.com/in/pietro-branco-rossi/",
+  //     email: "24201030@idp.aluno.edu.br",
+  //   },
+  //   {
+  //     name: "Moises Silva de Sousa",
+  //     role: "Monitor da equipe do Sprint  ",
+  //     image: Moises,
+  //     bio: "Especialista em gamificação",
+  //     linkedin: "https://www.linkedin.com/in/moises-sousa-a582b4164/",
+  //     email: "moises.sousa@idp.edu.br",
+  //   },
+  // ];
   const team = [
-    {
-      name: "Matheus Coelho Fernandes",
-      role: "Desenvolvedor full-stack",
-      image: Matheus,
-      bio: "Responsável pelo desenvolvimento completo do site, Foco em criação de experiências imersivas e de usuário.",
-      linkedin: "https://linkedin.com/in/matheuscoelhofernandes", 
-      email: "25101502@idp.aluno.edu.br", 
-    },
-    {
-      name: "Miguel Maximus",
-      role: "",
-      image: Max,
-      bio: "Diretor de arte",
-      linkedin: "https://www.linkedin.com/in/miguel-maximus-rodrigues-oliveira-4a17a531a/",
-      email: "#",
-    },
-    {
-      name: "Pietro Branco Rossi",
-      role: "Diretora de Design",
-      image: Pietro,
-      bio: "Gerente de projeto",
-      linkedin: "https://www.linkedin.com/in/pietro-branco-rossi/",
-      email: "24201030@idp.aluno.edu.br",
-    },
-    {
-      name: "Moises Silva de Sousa",
-      role: "Monitor da equipe do Sprint  ",
-      image: Moises,
-      bio: "Especialista em gamificação",
-      linkedin: "https://www.linkedin.com/in/moises-sousa-a582b4164/",
-      email: "moises.sousa@idp.edu.br",
-    },
-  ];
+  {
+    name: "Matheus Coelho Fernandes",
+    role: "Desenvolvedor Full-Stack",
+    image: Matheus,
+    bio: "Responsável pelo desenvolvimento do site e experiências imersivas.",
+    linkedin: "https://linkedin.com/in/matheuscoelhofernandes",
+    email: "25101502@idp.aluno.edu.br",
+  },
+  {
+    name: "Miguel Maximus",
+    role: "Diretor de Arte",
+    image: Max,
+    bio: "Responsável pela identidade visual, estética e direção criativa do projeto.",
+    linkedin: "https://www.linkedin.com/in/miguel-maximus-rodrigues-oliveira-4a17a531a/",
+    email: "#",
+  },
+  {
+    name: "Pietro Branco Rossi",
+    role: "Gerente de Projeto",
+    image: Pietro,
+    bio: "Coordena processos, organiza a equipe e garante a entrega das funcionalidades.",
+    linkedin: "https://www.linkedin.com/in/pietro-branco-rossi/",
+    email: "24201030@idp.aluno.edu.br",
+  },
+  {
+    name: "Moises Silva de Sousa",
+    role: "Monitor da Equipe Sprint",
+    image: Moises,
+    bio: "Responsável por orientar, acompanhar o time e apoiar nas decisões estratégicas.",
+    linkedin: "https://www.linkedin.com/in/moises-sousa-a582b4164/",
+    email: "moises.sousa@idp.edu.br",
+  },
+];
 
   return (
     <section className="py-20 px-6 bg-gradient-to-b from-[#0a3d5a]/30 to-transparent">
