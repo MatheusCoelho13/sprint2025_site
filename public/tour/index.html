@@ -15,7 +15,25 @@
   <!-- Necessário para GIROSCÓPIO funcionar -->
   <script src="https://cdn.jsdelivr.net/npm/three@0.150.0/examples/js/controls/DeviceOrientationControls.js"></script>
 
-  <style>
+<script>
+  (function() {
+    const url = window.location.href;
+
+    // Se termina com "/tour" sem barra → redirecionar
+    if (url.endsWith("/tour")) {
+      window.location.replace(url + "/");
+    }
+
+    // Se termina com ".../tour?algo"
+    const clean = url.split("?")[0];
+    if (clean.endsWith("/tour")) {
+      window.location.replace(clean + "/");
+    }
+  })();
+</script>
+
+
+<style>
     html, body {
       margin: 0;
       padding: 0;
