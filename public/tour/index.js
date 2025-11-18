@@ -1,4 +1,4 @@
-console.log("🚀 Iniciando Tour BioTIC — Marzipano");
+console.log("🚀 Iniciando Tour BioTIC — Marzipano + WebXR");
 
 // ============================================================
 // DETECÇÃO DE META QUEST
@@ -159,7 +159,8 @@ function iniciarTour() {
 
 let vrSession = null;
 let xrRefSpace = null;
-let xrFrameOfReference = null;
+let vrSessionActive = false;
+let vrRenderLoop = null;
 
 function inicializarVR() {
   console.log("🥽 Inicializando WebXR para Meta Quest...");
@@ -178,99 +179,193 @@ function inicializarVR() {
     }
 
     console.log("✅ VR imersivo suportado!");
-    
-    // Criar botão VR
-    const vrButton = document.createElement("button");
-    vrButton.id = "vr-button";
-    vrButton.textContent = "🥽 Entrar em VR";
-    vrButton.style.cssText = `
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      padding: 12px 24px;
-      background: #ff6b35;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-      z-index: 9999999;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-    `;
-    
-    vrButton.addEventListener("click", () => {
-      if (vrSession) {
-        // Sair de VR
-        vrSession.end().then(() => {
-          console.log("❌ Sessão VR encerrada");
-          vrButton.textContent = "🥽 Entrar em VR";
-          vrSession = null;
-          xrRefSpace = null;
-        });
-      } else {
-        // Entrar em VR
-        navigator.xr.requestSession("immersive-vr", {
-          requiredFeatures: ["local-floor"],
-          optionalFeatures: ["dom-overlay", "dom-overlay-for-handheld-ar"],
-          domOverlay: { root: document.body }
-        }).then((session) => {
-          console.log("✅ Sessão WebXR iniciada!");
-          vrSession = session;
-          vrButton.textContent = "🚪 Sair de VR";
-
-          // Configurar espaço de referência
-          session.requestReferenceSpace("local-floor").then((refSpace) => {
-            xrRefSpace = refSpace;
-            console.log("✅ VR iniciado com sucesso! Marzipano está ativo.");
-            
-            // Marzipano continua renderizando normalmente
-            // Não precisamos de loop extra de frames XR
-          }).catch((err) => {
-            console.warn("⚠️ local-floor não suportado, tentando viewer...");
-            session.requestReferenceSpace("viewer").then((refSpace) => {
-              xrRefSpace = refSpace;
-              console.log("✅ Viewer-space configurado");
-            }).catch((err2) => {
-              console.error("❌ Erro ao configurar reference space:", err2);
-              session.end();
-            });
-          });
-
-          // Evento de encerramento
-          session.addEventListener("end", () => {
-            console.log("ℹ️ Sessão VR encerrada pelo usuário");
-            vrButton.textContent = "🥽 Entrar em VR";
-            vrSession = null;
-            xrRefSpace = null;
-          });
-
-          // Detectar seleção de controles (clique em hotspots)
-          session.addEventListener("select", (event) => {
-            console.log("👆 Seleção detectada");
-            handleVRSelect(event);
-          });
-        }).catch((err) => {
-          console.error("❌ Erro ao iniciar VR:", err);
-          alert("Não foi possível iniciar VR. Verifique se você está em um Meta Quest.");
-        });
-      }
-    });
-    
-    document.body.appendChild(vrButton);
+    criarBotaoVR();
   }).catch((err) => {
     console.error("❌ Erro ao verificar suporte VR:", err);
   });
 }
 
+function criarBotaoVR() {
+  // Criar botão VR
+  const vrButton = document.createElement("button");
+  vrButton.id = "vr-button";
+  vrButton.textContent = "🥽 Entrar em VR";
+  vrButton.style.cssText = `
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 12px 24px;
+    background: #ff6b35;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 9999999;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    touch-action: manipulation;
+    user-select: none;
+  `;
+  
+  vrButton.addEventListener("click", async (e) => {
+    console.log("🖱️ Botão VR clicado");
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (vrSession) {
+      await encerrarVR(vrButton);
+    } else {
+      await iniciarVR(vrButton);
+    }
+  });
+  
+  document.body.appendChild(vrButton);
+}
+
+async function iniciarVR(botao) {
+  console.log("⏳ Iniciando sessão XR...");
+  botao.disabled = true;
+  botao.textContent = "⏳ Carregando...";
+
+  try {
+    // Configuração corrigida para Meta Quest
+    const sessionInit = {
+      requiredFeatures: ["local-floor"],
+      optionalFeatures: ["bounded-floor", "hand-tracking"]
+    };
+
+    console.log("📋 RequestSession config:", sessionInit);
+    
+    vrSession = await navigator.xr.requestSession("immersive-vr", sessionInit);
+    console.log("✅ Sessão XR criada:", vrSession);
+    
+    vrSessionActive = true;
+    botao.textContent = "🚪 Sair de VR";
+    botao.disabled = false;
+
+    // Configurar reference space
+    try {
+      xrRefSpace = await vrSession.requestReferenceSpace("local-floor");
+      console.log("✅ Reference space local-floor obtido");
+    } catch (err) {
+      console.warn("⚠️ local-floor não disponível, tentando viewer...");
+      xrRefSpace = await vrSession.requestReferenceSpace("viewer");
+      console.log("✅ Reference space viewer obtido como fallback");
+    }
+
+    // Iniciar loop de renderização VR
+    iniciarRenderLoopVR(vrSession);
+
+    // Listeners de eventos
+    vrSession.addEventListener("end", () => {
+      console.log("ℹ️ Sessão VR encerrada");
+      vrSessionActive = false;
+      vrSession = null;
+      xrRefSpace = null;
+      botao.textContent = "🥽 Entrar em VR";
+      botao.disabled = false;
+      
+      if (vrRenderLoop) {
+        cancelAnimationFrame(vrRenderLoop);
+        vrRenderLoop = null;
+      }
+    });
+
+    vrSession.addEventListener("select", (event) => {
+      console.log("👆 Controle selecionado em VR");
+      handleVRSelect(event);
+    });
+
+    vrSession.addEventListener("selectstart", (event) => {
+      console.log("👇 Pressionado");
+    });
+
+    vrSession.addEventListener("selectend", (event) => {
+      console.log("👆 Liberado");
+    });
+
+  } catch (err) {
+    console.error("❌ ERRO ao iniciar VR:", err.name, err.message);
+    botao.textContent = "🥽 Entrar em VR";
+    botao.disabled = false;
+    
+    // Mostrar erro específico
+    let mensagem = "Erro ao iniciar VR";
+    if (err.name === "NotAllowedError") {
+      mensagem = "VR bloqueado ou sem permissão";
+    } else if (err.name === "NotSupportedError") {
+      mensagem = "VR não suportado";
+    } else if (err.name === "AbortError") {
+      mensagem = "Sessão VR abortada";
+    }
+    
+    console.error("📌 Tipo de erro:", mensagem);
+  }
+}
+
+async function encerrarVR(botao) {
+  console.log("🚪 Encerrando VR...");
+  botao.disabled = true;
+
+  try {
+    if (vrRenderLoop) {
+      cancelAnimationFrame(vrRenderLoop);
+      vrRenderLoop = null;
+    }
+    
+    if (vrSession) {
+      await vrSession.end();
+    }
+    
+    vrSessionActive = false;
+    botao.textContent = "🥽 Entrar em VR";
+    botao.disabled = false;
+  } catch (err) {
+    console.error("❌ Erro ao encerrar VR:", err);
+    botao.disabled = false;
+  }
+}
+
+function iniciarRenderLoopVR(session) {
+  console.log("🎬 Iniciando render loop VR");
+  
+  let frameCount = 0;
+
+  function onXRFrame(time, frame) {
+    // ⚠️ IMPORTANTE: Sempre solicitar o próximo frame!
+    vrRenderLoop = session.requestAnimationFrame(onXRFrame);
+
+    // Obter a pose do usuário
+    const pose = frame.getViewerPose(xrRefSpace);
+    if (!pose) {
+      console.warn("⚠️ Sem pose disponível");
+      return;
+    }
+
+    // Marzipano continua renderizando automaticamente
+    // Esta função apenas mantém a sessão XR ativa
+    
+    // Debug: mostrar pose a cada 60 frames
+    frameCount++;
+    if (frameCount % 60 === 0) {
+      console.log("🎥 VR renderizando - Pose:", pose.transform.position);
+    }
+  }
+
+  vrRenderLoop = session.requestAnimationFrame(onXRFrame);
+}
+
 // Lidar com seleção (clique em hotspots VR)
 function handleVRSelect(event) {
-  console.log("🎯 Hotspot VR selecionado");
+  console.log("🎯 Seleção em VR");
   
   // Simular clique em hotspot
   const hotspots = document.querySelectorAll(".hotspot-container");
   if (hotspots.length > 0) {
-    console.log("✅ Clicando em hotspot via VR");
+    console.log("✅ Acionando hotspot via VR");
     hotspots[0].click();
+  } else {
+    console.warn("⚠️ Nenhum hotspot disponível");
   }
 }
