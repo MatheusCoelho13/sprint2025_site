@@ -387,12 +387,13 @@ function iniciarRenderLoopVR(session) {
 
   console.log(`   📐 Framebuffer size: ${layer.framebufferWidth}x${layer.framebufferHeight}`);
   console.log(`   🎨 Framebuffer object exists: ${!!layer.framebuffer}`);
+  console.log(`   📦 Canvas original: ${panoEl.width}x${panoEl.height}`);
 
   function onXRFrame(time, frame) {
     try {
       frameCount++;
 
-      // 1️⃣ OBRIGATÓRIO: Vincular framebuffer ANTES de qualquer renderização
+      // 1️⃣ OBRIGATÓRIO: Vincular framebuffer ANTES de TUDO
       gl.bindFramebuffer(gl.FRAMEBUFFER, layer.framebuffer);
       
       // DEBUG: Verificar se framebuffer foi vinculado
@@ -401,15 +402,16 @@ function iniciarRenderLoopVR(session) {
         console.error(`❌ ERRO CRÍTICO: Framebuffer NÃO vinculado no frame ${frameCount}`);
       }
 
+      // 2️⃣ Viewport para o tamanho do framebuffer
       gl.viewport(0, 0, layer.framebufferWidth, layer.framebufferHeight);
 
       // DEBUG: Verificar viewport
       const vp = gl.getParameter(gl.VIEWPORT);
-      if (frameCount % 90 === 0) {
+      if (frameCount === 1) {
         console.log(`   🔍 Viewport: [${vp[0]}, ${vp[1]}, ${vp[2]}, ${vp[3]}]`);
       }
 
-      // 2️⃣ Limpar apenas uma vez no início do frame
+      // 3️⃣ Limpar canvas
       gl.clearColor(0.0, 0.0, 0.0, 1.0);
       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
@@ -417,57 +419,58 @@ function iniciarRenderLoopVR(session) {
       const fbStatus = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
       if (fbStatus !== gl.FRAMEBUFFER_COMPLETE) {
         console.error(`❌ Framebuffer incompleto (status ${fbStatus}) no frame ${frameCount}`);
+      } else if (frameCount === 1) {
+        console.log(`✅ Framebuffer status: COMPLETE (0x${fbStatus.toString(16)})`);
       }
 
-      // 3️⃣ Obter a pose e renderizar Marzipano
+      // 4️⃣ Obter a pose e renderizar
       const pose = frame.getViewerPose(xrRefSpace);
       if (pose) {
         if (frameCount === 1) {
-          console.log(`   ✅ Pose obtida: ${pose.views.length} views`);
+          console.log(`   ✅ Pose obtida: ${pose.views.length} views para renderizar`);
         }
         
-        // O Marzipano agora renderiza para o framebuffer correto
-        // pois já vincular antes (comportamento padrão do Marzipano)
-        
-        // Simulando que o Marzipano renderiza aqui
-        // (Marzipano usa requestAnimationFrame interno, mas com GL vinculado)
-        gl.clearColor(0.1, 0.1, 0.1, 1.0);
-        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-        
-        if (frameCount % 90 === 0) {
-          console.log(`   🎬 Marzipano render chamado`);
+        // 5️⃣ RENDERIZAR O MARZIPANO
+        try {
+          if (viewer) {
+            viewer.render();
+            if (frameCount === 1) {
+              console.log(`   ✅ viewer.render() executado com sucesso`);
+            }
+          } else {
+            console.warn(`⚠️ Viewer não disponível no frame ${frameCount}`);
+            gl.clearColor(0.2, 0.5, 0.2, 1.0);
+            gl.clear(gl.COLOR_BUFFER_BIT);
+          }
+        } catch (renderErr) {
+          console.error(`❌ Erro ao renderizar Marzipano no frame ${frameCount}:`, renderErr);
         }
       } else {
-        if (frameCount === 1) {
-          console.warn(`   ⚠️ Pose null no primeiro frame`);
-        }
+        console.warn(`   ⚠️ Pose null no frame ${frameCount}`);
+        gl.clearColor(0.5, 0.0, 0.0, 1.0);
+        gl.clear(gl.COLOR_BUFFER_BIT);
       }
 
-      // 4️⃣ Solicitação FINAL do próximo frame
+      // 6️⃣ Solicitação FINAL do próximo frame (MUST BE LAST)
       vrRenderLoop = session.requestAnimationFrame(onXRFrame);
 
-      // Debug logging
-      if (frameCount % 90 === 0) {
-        console.log(`   ✅ Frame ${frameCount} renderizado para WebXR com sucesso`);
-      }
-      
-      // Log de erro a cada 30 frames se houver problema
-      if (frameCount === 1 || frameCount === 30 || frameCount === 60) {
-        console.log(`   📊 Frame pipeline: bound=${isBound}, pose=${!!pose}, status=${fbStatus}`);
+      // Debug logging a cada N frames
+      if (frameCount === 1 || frameCount === 30 || frameCount === 90) {
+        console.log(`📊 Frame ${frameCount} OK: bound=${isBound}, pose=${!!pose}, fbStatus=0x${fbStatus.toString(16)}`);
       }
       
     } catch (err) {
-      console.error(`❌ Erro CRÍTICO no frame ${frameCount}:`, err);
-      console.error(`   Stack: ${err.stack}`);
+      console.error(`❌ ERRO CRÍTICO no frame ${frameCount}:`, err);
+      console.error(`   Mensagem: ${err.message}`);
       // Continuar tentando renderizar mesmo com erro
       vrRenderLoop = session.requestAnimationFrame(onXRFrame);
     }
   }
 
   // Iniciar o loop
-  console.log("📍 Solicitando primeiro frame...");
+  console.log("📍 Solicitando primeiro frame XR...");
   vrRenderLoop = session.requestAnimationFrame(onXRFrame);
-  console.log("✅ Render loop iniciado - aguardando frames do VR");
+  console.log("✅ Render loop VR iniciado - aguardando frames do compositor");
 }
 
 // Lidar com seleção (clique em hotspots VR)
