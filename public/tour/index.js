@@ -253,14 +253,17 @@ async function iniciarVR(botao) {
     }
 
     // 3️⃣ CRÍTICO: Contexto WebGL e XRWebGLLayer
+    console.log("🎨 Obtendo contexto WebGL...");
     const gl = panoEl.getContext("webgl2") || panoEl.getContext("webgl");
     if (!gl) {
       throw new Error("❌ Não foi possível obter contexto WebGL do canvas #pano");
     }
     console.log("✅ WebGL context obtido:", gl.getParameter(gl.VERSION));
+    console.log(`   Canvas size: ${panoEl.width}x${panoEl.height}`);
     
     // 4️⃣ Criar XRWebGLLayer com config adequada para Meta Quest
     let glLayer = null;
+    console.log("📦 Criando XRWebGLLayer...");
     try {
       glLayer = new XRWebGLLayer(vrSession, gl, { 
         antialias: true,      // Suavização anti-aliasing
@@ -269,18 +272,21 @@ async function iniciarVR(botao) {
         stencil: false,       // Não precisa stencil
         framebufferScaleFactor: 1.0  // Renderizar em resolução nativa
       });
-      console.log("✅ XRWebGLLayer criado");
-      console.log("   - Resolução framebuffer:", glLayer.framebufferWidth, "x", glLayer.framebufferHeight);
+      console.log("✅ XRWebGLLayer criado com sucesso");
+      console.log(`   📐 Resolução framebuffer: ${glLayer.framebufferWidth}x${glLayer.framebufferHeight}`);
+      console.log(`   🎯 Framebuffer object: ${!!glLayer.framebuffer}`);
     } catch (err) {
       console.error("❌ Falha ao criar XRWebGLLayer:", err);
       throw err;
     }
 
     // 5️⃣ CRÍTICO: Atualizar renderState com a layer WebXR
+    console.log("⚙️  Atualizando RenderState...");
     try {
       await vrSession.updateRenderState({ baseLayer: glLayer });
       console.log("✅ RenderState configurado com XRWebGLLayer");
-      console.log("   - Framebuffer vinculado ao compositor");
+      console.log(`   ✓ Framebuffer vinculado ao compositor`);
+      console.log(`   ✓ Base layer definida: ${!!vrSession.renderState.baseLayer}`);
     } catch (err) {
       console.error("❌ Falha ao atualizar renderState:", err);
       throw err;
@@ -379,19 +385,47 @@ function iniciarRenderLoopVR(session) {
     return;
   }
 
+  console.log(`   📐 Framebuffer size: ${layer.framebufferWidth}x${layer.framebufferHeight}`);
+  console.log(`   🎨 Framebuffer object exists: ${!!layer.framebuffer}`);
+
   function onXRFrame(time, frame) {
     try {
+      frameCount++;
+
       // 1️⃣ OBRIGATÓRIO: Vincular framebuffer ANTES de qualquer renderização
       gl.bindFramebuffer(gl.FRAMEBUFFER, layer.framebuffer);
+      
+      // DEBUG: Verificar se framebuffer foi vinculado
+      const isBound = gl.getParameter(gl.FRAMEBUFFER_BINDING) === layer.framebuffer;
+      if (!isBound) {
+        console.error(`❌ ERRO CRÍTICO: Framebuffer NÃO vinculado no frame ${frameCount}`);
+      }
+
       gl.viewport(0, 0, layer.framebufferWidth, layer.framebufferHeight);
+
+      // DEBUG: Verificar viewport
+      const vp = gl.getParameter(gl.VIEWPORT);
+      if (frameCount % 90 === 0) {
+        console.log(`   🔍 Viewport: [${vp[0]}, ${vp[1]}, ${vp[2]}, ${vp[3]}]`);
+      }
 
       // 2️⃣ Limpar apenas uma vez no início do frame
       gl.clearColor(0.0, 0.0, 0.0, 1.0);
       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
+      // DEBUG: Verificar framebuffer status
+      const fbStatus = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
+      if (fbStatus !== gl.FRAMEBUFFER_COMPLETE) {
+        console.error(`❌ Framebuffer incompleto (status ${fbStatus}) no frame ${frameCount}`);
+      }
+
       // 3️⃣ Obter a pose e renderizar Marzipano
       const pose = frame.getViewerPose(xrRefSpace);
       if (pose) {
+        if (frameCount === 1) {
+          console.log(`   ✅ Pose obtida: ${pose.views.length} views`);
+        }
+        
         // O Marzipano agora renderiza para o framebuffer correto
         // pois já vincular antes (comportamento padrão do Marzipano)
         
@@ -399,25 +433,39 @@ function iniciarRenderLoopVR(session) {
         // (Marzipano usa requestAnimationFrame interno, mas com GL vinculado)
         gl.clearColor(0.1, 0.1, 0.1, 1.0);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+        
+        if (frameCount % 90 === 0) {
+          console.log(`   🎬 Marzipano render chamado`);
+        }
+      } else {
+        if (frameCount === 1) {
+          console.warn(`   ⚠️ Pose null no primeiro frame`);
+        }
       }
 
       // 4️⃣ Solicitação FINAL do próximo frame
       vrRenderLoop = session.requestAnimationFrame(onXRFrame);
 
-      // Debug
-      frameCount++;
+      // Debug logging
       if (frameCount % 90 === 0) {
-        console.log(`✅ Frame ${frameCount} renderizado para WebXR`);
+        console.log(`   ✅ Frame ${frameCount} renderizado para WebXR com sucesso`);
+      }
+      
+      // Log de erro a cada 30 frames se houver problema
+      if (frameCount === 1 || frameCount === 30 || frameCount === 60) {
+        console.log(`   📊 Frame pipeline: bound=${isBound}, pose=${!!pose}, status=${fbStatus}`);
       }
       
     } catch (err) {
-      console.error("❌ Erro no render loop VR:", err);
+      console.error(`❌ Erro CRÍTICO no frame ${frameCount}:`, err);
+      console.error(`   Stack: ${err.stack}`);
       // Continuar tentando renderizar mesmo com erro
       vrRenderLoop = session.requestAnimationFrame(onXRFrame);
     }
   }
 
   // Iniciar o loop
+  console.log("📍 Solicitando primeiro frame...");
   vrRenderLoop = session.requestAnimationFrame(onXRFrame);
   console.log("✅ Render loop iniciado - aguardando frames do VR");
 }
