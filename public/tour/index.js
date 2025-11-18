@@ -1,10 +1,12 @@
 console.log("🚀 Iniciando Tour BioTIC — Marzipano + WebXR");
 
 // ============================================================
-// DETECÇÃO DE META QUEST
+// DETECÇÃO DE DISPOSITIVO
 // ============================================================
 const isMetaQuest = /OculusBrowser|Meta|Quest/i.test(navigator.userAgent);
+const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 console.log("📱 Meta Quest detectado:", isMetaQuest);
+console.log("📱 Celular detectado:", isMobile);
 
 // ============================================================
 // 0) AGUARDAR APP_DATA CARREGAR
@@ -150,6 +152,13 @@ function iniciarTour() {
   // ============================================================
   if (isMetaQuest) {
     inicializarVR();
+  }
+
+  // ============================================================
+  // 📱 SUPORTE GIROSCÓPIO CELULAR
+  // ============================================================
+  if (isMobile) {
+    criarBotaoGiroscopio();
   }
 }
 
@@ -485,4 +494,154 @@ function handleVRSelect(event) {
   } else {
     console.warn("⚠️ Nenhum hotspot disponível");
   }
+}
+
+// ============================================================
+// 6) SUPORTE GIROSCÓPIO PARA CELULAR
+// ============================================================
+
+let deviceOrientationControl = null;
+let gyroscopeEnabled = false;
+let gyroscopeButton = null;
+
+function inicializarGiroscopio() {
+  if (!isMobile) {
+    console.log("⏭️ Giroscópio não disponível em desktop");
+    return;
+  }
+
+  console.log("📱 Inicializando suporte a giroscópio...");
+
+  // Solicitar permissão de acesso ao giroscópio (obrigatório em iOS 13+)
+  if (typeof DeviceOrientationEvent !== "undefined" && typeof DeviceOrientationEvent.requestPermission === "function") {
+    console.log("🔐 Solicitando permissão para giroscópio (iOS)...");
+    DeviceOrientationEvent.requestPermission()
+      .then((permissionState) => {
+        if (permissionState === "granted") {
+          console.log("✅ Permissão concedida para giroscópio");
+          ativarGiroscopio();
+        } else {
+          console.warn("⚠️ Permissão negada para giroscópio");
+        }
+      })
+      .catch((err) => {
+        console.warn("⚠️ Erro ao solicitar permissão:", err);
+        // Tentar ativar mesmo sem permissão (Android)
+        ativarGiroscopio();
+      });
+  } else {
+    // Android e navegadores antigos
+    console.log("📱 Ativando giroscópio sem permissão (Android/antigos)");
+    ativarGiroscopio();
+  }
+}
+
+function ativarGiroscopio() {
+  if (!viewer || !panoEl) {
+    console.warn("⚠️ Viewer não disponível");
+    return;
+  }
+
+  try {
+    console.log("🎮 Ativando controle por giroscópio...");
+    
+    let lastAlpha = 0;
+    let lastBeta = 0;
+    let lastGamma = 0;
+
+    // Listener para mudanças de orientação
+    const handleDeviceOrientation = (event) => {
+      if (!gyroscopeEnabled) return;
+
+      const alpha = (event.alpha || 0) % 360; // z rotation (0-360)
+      const beta = event.beta || 0;           // x rotation (-180 to 180)
+      const gamma = event.gamma || 0;         // y rotation (-90 to 90)
+
+      // Converter para radianos
+      const yaw = THREE.MathUtils.degToRad(alpha);
+      const pitch = THREE.MathUtils.degToRad(-beta); // Inverter pitch
+
+      // Atualizar visão do Marzipano
+      try {
+        if (cenaAtual && viewer) {
+          const view = viewer.view();
+          if (view) {
+            view.setYaw(yaw);
+            view.setPitch(pitch);
+          }
+        }
+      } catch (err) {
+        console.warn("⚠️ Erro ao atualizar visão:", err);
+      }
+
+      lastAlpha = alpha;
+      lastBeta = beta;
+      lastGamma = gamma;
+    };
+
+    // Remover listener anterior se existir
+    window.removeEventListener("deviceorientation", handleDeviceOrientation);
+    
+    // Adicionar novo listener
+    window.addEventListener("deviceorientation", handleDeviceOrientation, false);
+
+    console.log("✅ Giroscópio ativado com sucesso");
+    gyroscopeEnabled = true;
+    
+    if (gyroscopeButton) {
+      gyroscopeButton.textContent = "📱 Giroscópio ✓";
+      gyroscopeButton.style.background = "#4CAF50";
+    }
+  } catch (err) {
+    console.error("❌ Erro ao ativar giroscópio:", err);
+  }
+}
+
+function desativarGiroscopio() {
+  console.log("🎮 Desativando giroscópio...");
+  gyroscopeEnabled = false;
+  
+  if (gyroscopeButton) {
+    gyroscopeButton.textContent = "📱 Giroscópio";
+    gyroscopeButton.style.background = "#2196F3";
+  }
+}
+
+function criarBotaoGiroscopio() {
+  if (!isMobile) return;
+
+  gyroscopeButton = document.createElement("button");
+  gyroscopeButton.id = "gyro-button";
+  gyroscopeButton.textContent = "📱 Giroscópio";
+  gyroscopeButton.style.cssText = `
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    padding: 12px 24px;
+    background: #2196F3;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 9999998;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    touch-action: manipulation;
+    user-select: none;
+  `;
+
+  gyroscopeButton.addEventListener("click", async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (gyroscopeEnabled) {
+      desativarGiroscopio();
+    } else {
+      inicializarGiroscopio();
+    }
+  });
+
+  document.body.appendChild(gyroscopeButton);
+  console.log("✅ Botão de giroscópio criado");
 }
