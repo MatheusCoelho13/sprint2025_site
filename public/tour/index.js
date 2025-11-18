@@ -1,206 +1,139 @@
-console.log("🚀 Iniciando BioTIC VR — Three.js + Marzipano + Hotspots");
+console.log("🚀 Iniciando Tour BioTIC — Marzipano");
 
-/* ============================================================
-   0) CARREGAÇÃO DOS DADOS
-============================================================ */
+// ============================================================
+// 0) AGUARDAR APP_DATA CARREGAR
+// ============================================================
 
-const SCENES = window.TOUR_SCENES || [];
-if (!SCENES.length) console.error("❌ Nenhuma cena em TOUR_SCENES");
+let SCENES = [];
 
-/* ============================================================
-   1) MARZIPANO — Panorama DOM normal
-============================================================ */
+function esperarAPPDATA() {
+  if (!window.APP_DATA || !window.APP_DATA.scenes) {
+    console.log("⏳ Aguardando APP_DATA...");
+    return setTimeout(esperarAPPDATA, 100);
+  }
 
-const panoEl = document.getElementById("pano");
-const viewer = new Marzipano.Viewer(panoEl);
+  SCENES = window.APP_DATA.scenes;
+  console.log("✅ Dados carregados:", SCENES.length, "cenas");
+  iniciarTour();
+}
 
-const marzipanoCache = {};
+setTimeout(esperarAPPDATA, 300);
 
-function criarCenaMarzipano(data) {
+// ============================================================
+// 1) CONFIGURAÇÃO DO MARZIPANO
+// ============================================================
+
+let viewer = null;
+let panoEl = null;
+const cacheCenas = {}; // cache para não recriar cenas
+
+function initMarzipano() {
+  panoEl = document.getElementById("pano");
+  viewer = new Marzipano.Viewer(panoEl);
+  console.log("✅ Marzipano Viewer iniciado");
+}
+
+// Criação da cena no Marzipano
+function criarCena(info) {
   const source = Marzipano.ImageUrlSource.fromString(
-    `/tour/tiles/${data.id}/{z}/{f}/{y}/{x}.jpg`
+    `/tour/tiles/${info.id}/{z}/{f}/{y}/{x}.jpg`
   );
 
-  const geometry = new Marzipano.CubeGeometry(data.levels);
+  const geometry = new Marzipano.CubeGeometry(info.levels);
 
   const limiter = Marzipano.RectilinearView.limit.traditional(
-    data.faceSize,
-    Math.PI / 2
+    info.faceSize,
+    (120 * Math.PI) / 180
   );
 
   const view = new Marzipano.RectilinearView(
-    data.initialViewParameters,
+    info.initialViewParameters,
     limiter
   );
 
   const scene = viewer.createScene({
     source,
     geometry,
-    view
+    view,
+    pinFirstLevel: true
   });
 
   return { scene, view };
 }
 
-function trocarCenaMarzipano(id) {
-  const info = APP_DATA.scenes.find(s => s.id === id);
-  if (!info) return console.error("Cena não encontrada:", id);
+// ============================================================
+// 2) HOTSPOTS MARZIPANO
+// ============================================================
 
-  if (!marzipanoCache[id]) {
-    marzipanoCache[id] = criarCenaMarzipano(info);
-  }
+function criarHotspot(sceneObj, hotspotData) {
+  const el = document.createElement("div");
+  el.className = "hotspot-container";
 
-  marzipanoCache[id].scene.switchTo();
-}
+  const img = document.createElement("img");
+  img.src = "/tour/img/link.png";
+  img.className = "hotspot-img";
+  el.appendChild(img);
 
-/* ============================================================
-   2) THREE.JS — VR PREVIEW
-============================================================ */
-
-const loader = new THREE.TextureLoader();
-
-const renderer = new THREE.WebGLRenderer({
-  antialias: true,
-  alpha: true
-});
-
-renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.xr.enabled = true;
-document.body.appendChild(renderer.domElement);
-
-document.body.appendChild(VRButton.createButton(renderer));
-
-const scene3D = new THREE.Scene();
-
-const camera3D = new THREE.PerspectiveCamera(
-  80,
-  window.innerWidth / window.innerHeight,
-  0.1,
-  50
-);
-
-// Esfera VR
-const sphereGeo = new THREE.SphereGeometry(10, 64, 64);
-sphereGeo.scale(-1, 1, 1);
-
-const sphereMat = new THREE.MeshBasicMaterial({ color: 0x000000 });
-const sphereMesh = new THREE.Mesh(sphereGeo, sphereMat);
-scene3D.add(sphereMesh);
-
-/* ============================================================
-   3) HOTSPOTS 3D (versão 100% compatível)
-============================================================ */
-
-let hotspots = [];
-const raycaster = new THREE.Raycaster();
-const mouse = new THREE.Vector2();
-
-function clearHotspots() {
-  hotspots.forEach(h => scene3D.remove(h));
-  hotspots = [];
-}
-
-function yawPitchToVector(yaw, pitch, dist) {
-  return new THREE.Vector3(
-    dist * Math.sin(yaw) * Math.cos(pitch),
-    dist * Math.sin(pitch),
-    -dist * Math.cos(yaw) * Math.cos(pitch)
-  );
-}
-
-function criarHotspot3D(yaw, pitch, targetId) {
-  const texture = loader.load("/tour/img/link.png");
-  texture.colorSpace = THREE.SRGBColorSpace;
-
-  const material = new THREE.MeshBasicMaterial({
-    map: texture,
-    transparent: true,
-    alphaTest: 0.1,
-    depthTest: false,
-    depthWrite: false,
-    side: THREE.DoubleSide
+  // Clique → trocar cena
+  el.addEventListener("click", (e) => {
+    e.stopPropagation();
+    trocarCena(hotspotData.target);
   });
 
-  const mesh = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), material);
+  // Criar hotspot usando o Marzipano (posicionamento CORRETO)
+  sceneObj.scene.hotspotContainer().createHotspot(el, {
+    yaw: hotspotData.yaw,
+    pitch: hotspotData.pitch
+  });
 
-  const pos = yawPitchToVector(yaw, pitch, 11.5);
-  mesh.position.copy(pos);
-
-  mesh.userData.targetId = targetId;
-  hotspots.push(mesh);
-  scene3D.add(mesh);
+  return el;
 }
 
-function criarHotspotsCena(id) {
-  clearHotspots();
-  const info = SCENES.find(s => s.id === id);
-  if (!info) return;
+// ============================================================
+// 3) TROCAR DE CENA
+// ============================================================
 
-  info.links.forEach(h =>
-    criarHotspot3D(h.yaw, h.pitch, h.target)
-  );
-}
-
-// Sempre virar para a câmera
-function atualizarHotspots() {
-  hotspots.forEach(h => h.lookAt(camera3D.position));
-}
-
-/* ============================================================
-   4) TROCAR CENA COMPLETA (DOM + VR)
-============================================================ */
+let cenaAtual = null;
 
 function trocarCena(id) {
-  console.log("🔄 Trocando para:", id);
+  console.log("🔄 Carregando cena:", id);
 
-  trocarCenaMarzipano(id);
+  const data = SCENES.find(s => s.id === id);
+  if (!data) {
+    return console.error("❌ Cena não encontrada:", id);
+  }
 
-  const preview = `/tour/tiles/${id}/preview.jpg`;
-  loader.load(preview, tex => {
-    sphereMat.map = tex;
-    sphereMat.needsUpdate = true;
-  });
+  // Criar no cache se ainda não existir
+  if (!cacheCenas[id]) {
+    cacheCenas[id] = criarCena(data);
+  }
 
-  criarHotspotsCena(id);
+  const cenaObj = cacheCenas[id];
+  cenaObj.scene.switchTo();
+  cenaAtual = data;
+
+  // Remover hotspots visuais antigos
+  document.querySelectorAll(".hotspot-container").forEach(e => e.remove());
+
+  // Criar hotspots da nova cena
+  if (data.linkHotspots && data.linkHotspots.length > 0) {
+    data.linkHotspots.forEach(h => criarHotspot(cenaObj, h));
+  }
+
+  console.log(`✨ Cena "${id}" carregada com ${data.linkHotspots?.length || 0} hotspots.`);
 }
 
-/* ============================================================
-   5) CLIQUES EM HOTSPOTS
-============================================================ */
+// ============================================================
+// 4) INICIAR TOUR
+// ============================================================
 
-window.addEventListener("click", ev => {
-  mouse.x = (ev.clientX / window.innerWidth) * 2 - 1;
-  mouse.y = -(ev.clientY / window.innerHeight) * 2 + 1;
+function iniciarTour() {
+  initMarzipano();
 
-  raycaster.setFromCamera(mouse, camera3D);
-  const hit = raycaster.intersectObjects(hotspots);
-
-  if (hit.length > 0) {
-    trocarCena(hit[0].object.userData.targetId);
+  if (SCENES.length === 0) {
+    return console.error("❌ Nenhuma cena encontrada em APP_DATA");
   }
-});
 
-/* ============================================================
-   6) RESIZE
-============================================================ */
-
-window.addEventListener("resize", () => {
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  camera3D.aspect = window.innerWidth / window.innerHeight;
-  camera3D.updateProjectionMatrix();
-});
-
-/* ============================================================
-   7) LOOP RENDER
-============================================================ */
-
-renderer.setAnimationLoop(() => {
-  atualizarHotspots();
-  renderer.render(scene3D, camera3D);
-});
-
-/* ============================================================
-   8) INICIAR NO PRIMEIRO PANORAMA
-============================================================ */
-
-trocarCena(SCENES[0].id);
+  trocarCena(SCENES[0].id);
+  console.log("🚀 Tour iniciado na cena:", SCENES[0].id);
+}

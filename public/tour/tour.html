@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>BioTIC 360 VR Tour</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
+  <!-- MARZIPANO -->
+  <script src="/tour/vendor/marzipano.js"></script>
+
+  <!-- THREE.JS (core) -->
+  <script src="/tour/vendor/three.min.js"></script>
+
+  <!-- VRButton (ThreeJS WebXR) -->
+  <script src="/tour/vendor/VRButton.js"></script>
+
+  <!-- DeviceOrientation Controls (Giroscópio) - LOCAL VENDOR -->
+  <script src="/tour/vendor/DeviceOrientationControls.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #000;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    /* MARZIPANO fica atrás */
+    #pano {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+
+    /* THREE.JS fica na frente */
+    canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 2 !important;
+      pointer-events: none;
+    }
+
+    /* Hotspot DOM */
+    .dom-hotspot {
+      will-change: transform;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Container do Marzipano -->
+  <div id="pano"></div>
+
+  <!-- Dados do tour (DEVE estar antes do index.js) -->
+  <script src="/tour/tour.js"></script>
+
+  <!-- Lógica do Tour (Marzipano + VR + Hotspots + Giroscópio) -->
+  <script src="/tour/index.js"></script>
+
+</body>
+</html>
