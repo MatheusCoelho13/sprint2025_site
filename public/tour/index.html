@@ -1,42 +1,59 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8">
-  <title>Tour 360</title>
+  <meta charset="UTF-8" />
+  <title>Tour 360 VR — BioTIC</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
-  <meta name="viewport"
-        content="width=device-width, initial-scale=1.0, maximum-scale=1.0,
-                 viewport-fit=cover, user-scalable=no">
+  <!-- Marzipano -->
+  <script src="/tour/vendor/marzipano.js"></script>
 
-  <meta name="theme-color" content="#000">
+  <!-- Three.js + VRButton -->
+  <script src="/tour/vendor/three.min.js"></script>
+  <script src="/tour/vendor/VRButton.js"></script>
 
-  <link rel="stylesheet" href="vendor/reset.min.css">
-  <link rel="stylesheet" href="style.css">
+  <!-- Necessário para GIROSCÓPIO funcionar -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.150.0/examples/js/controls/DeviceOrientationControls.js"></script>
+
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      width: 100%;
+      height: 100%;
+      background: #000;
+    }
+
+    /* Marzipano */
+    #pano {
+      width: 100vw;
+      height: 100vh;
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      background: #000;
+    }
+
+    /* Three.js canvas atrás */
+    canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      pointer-events: none;
+    }
+  </style>
 </head>
 
-<body class="multiple-scenes view-control-buttons">
+<body>
 
   <div id="pano"></div>
 
-  <div id="sceneList">
-    <ul class="scenes">
-      <!-- A lista será preenchida pelo JS -->
-    </ul>
-  </div>
-
-  <div id="titleBar">
-    <h1 class="sceneName"></h1>
-  </div>
-
-  <!-- Controles -->
-  <a href="#" id="fullscreenToggle"><img class="icon off" src="img/fullscreen.png"><img class="icon on" src="img/windowed.png"></a>
-  <a href="#" id="sceneListToggle"><img class="icon off" src="img/expand.png"><img class="icon on" src="img/collapse.png"></a>
-
-  <script src="vendor/marzipano.js"></script>
-  <script src="vendor/screenfull.min.js"></script>
-  <script src="vendor/bowser.min.js"></script>
-  <script src="data.js"></script>
-  <script src="index.js"></script>
+  <script src="/tour/tour.js"></script>
+  <script src="/tour/data.js"></script>
+  <script src="/tour/index.js"></script>
 
 </body>
 </html>
