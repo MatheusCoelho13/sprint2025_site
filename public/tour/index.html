@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Tour 360 VR — BioTIC</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+  <!-- Marzipano -->
+  <script src="/tour/vendor/marzipano.js"></script>
+
+  <!-- Three.js + VRButton -->
+  <script src="/tour/vendor/three.min.js"></script>
+  <script src="/tour/vendor/VRButton.js"></script>
+
+  <!-- Necessário para GIROSCÓPIO funcionar -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.150.0/examples/js/controls/DeviceOrientationControls.js"></script>
+
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      width: 100%;
+      height: 100%;
+      background: #000;
+    }
+#pano {
+  position: absolute;
+  inset: 0;
+  z-index: 1 !important; /* pano no fundo */
+}
+
+.hotspot-container {
+  position: absolute;
+  width: 54px;
+  height: 54px;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+
+  /* AQUI ESTÁ A CORREÇÃO REAL */
+  z-index: 999999 !important;   /* hotspot sempre acima do pano */
+}
+
+.hotspot-container img {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0px 0px 6px rgba(0,0,0,0.8));
+}
+
+  </style>
+</head>
+
+<body>
+
+  <div id="pano"></div>
+
+  <script src="/tour/tour.js"></script>
+  <script src="/tour/data.js"></script>
+  <script src="/tour/index.js"></script>
+
+</body>
+</html>
