@@ -17,20 +17,19 @@
 
 <script>
   (function() {
-    const url = window.location.href;
-
-    // Se termina com "/tour" sem barra → redirecionar
-    if (url.endsWith("/tour")) {
-      window.location.replace(url + "/");
+    const clean = location.pathname;
+    if (clean === "/tour" || clean === "/tour/") {
+      // OK
+      return;
     }
 
-    // Se termina com ".../tour?algo"
-    const clean = url.split("?")[0];
-    if (clean.endsWith("/tour")) {
-      window.location.replace(clean + "/");
+    // Se estiver em rota quebrada, volta para /tour/
+    if (!clean.startsWith("/tour/")) {
+      location.replace("/tour/");
     }
   })();
 </script>
+
 
 
 <style>
