@@ -222,12 +222,19 @@ function inicializarVR() {
           // Configurar espaço de referência
           session.requestReferenceSpace("local-floor").then((refSpace) => {
             xrRefSpace = refSpace;
-            console.log("✅ Reference space configurado");
-
-            // Loop de renderização VR
-            session.requestAnimationFrame(onXRFrame);
+            console.log("✅ VR iniciado com sucesso! Marzipano está ativo.");
+            
+            // Marzipano continua renderizando normalmente
+            // Não precisamos de loop extra de frames XR
           }).catch((err) => {
-            console.error("❌ Erro ao configurar reference space:", err);
+            console.warn("⚠️ local-floor não suportado, tentando viewer...");
+            session.requestReferenceSpace("viewer").then((refSpace) => {
+              xrRefSpace = refSpace;
+              console.log("✅ Viewer-space configurado");
+            }).catch((err2) => {
+              console.error("❌ Erro ao configurar reference space:", err2);
+              session.end();
+            });
           });
 
           // Evento de encerramento
@@ -256,21 +263,14 @@ function inicializarVR() {
   });
 }
 
-// Frame da sessão XR
-function onXRFrame(time, frame) {
-  const session = frame.session;
-  
-  // Solicitar próximo frame
-  session.requestAnimationFrame(onXRFrame);
-
-  // Aqui você pode adicionar lógica de renderização VR
-  // Por enquanto, apenas mantém o Marzipano funcionando
-  console.log("🎬 Frame VR:", time);
-}
-
 // Lidar com seleção (clique em hotspots VR)
 function handleVRSelect(event) {
-  console.log("🎯 Hotspot VR clicado");
-  // Lógica para detectar qual hotspot foi clicado
-  // e chamar trocarCena() apropriadamente
+  console.log("🎯 Hotspot VR selecionado");
+  
+  // Simular clique em hotspot
+  const hotspots = document.querySelectorAll(".hotspot-container");
+  if (hotspots.length > 0) {
+    console.log("✅ Clicando em hotspot via VR");
+    hotspots[0].click();
+  }
 }
