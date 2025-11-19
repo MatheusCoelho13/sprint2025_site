@@ -4,7 +4,9 @@ console.log("🚀 Iniciando Tour BioTIC — Marzipano + WebXR");
 // DETECÇÃO DE DISPOSITIVO
 // ============================================================
 const isMetaQuest = /OculusBrowser|Meta|Quest/i.test(navigator.userAgent);
-const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+  navigator.userAgent
+);
 console.log("📱 Meta Quest detectado:", isMetaQuest);
 console.log("📱 Celular detectado:", isMobile);
 
@@ -15,7 +17,6 @@ console.log("📱 Celular detectado:", isMobile);
 let SCENES = [];
 
 function esperarAPPDATA() {
-  // Verificar se dados foram carregados via script no HTML
   if (!window.APP_DATA || !window.APP_DATA.scenes) {
     console.log("⏳ Aguardando APP_DATA...");
     return setTimeout(esperarAPPDATA, 100);
@@ -26,7 +27,7 @@ function esperarAPPDATA() {
   iniciarTour();
 }
 
-// Aguardar carregamento do tour.js (que define APP_DATA)
+// Aguardar carregamento do data.js (que define APP_DATA)
 setTimeout(esperarAPPDATA, 300);
 
 // ============================================================
@@ -39,6 +40,11 @@ const cacheCenas = {}; // cache para não recriar cenas
 
 function initMarzipano() {
   panoEl = document.getElementById("pano");
+  if (!panoEl) {
+    console.error("❌ Elemento #pano não encontrado no DOM");
+    return;
+  }
+
   viewer = new Marzipano.Viewer(panoEl);
   console.log("✅ Marzipano Viewer iniciado");
 }
@@ -65,7 +71,7 @@ function criarCena(info) {
     source,
     geometry,
     view,
-    pinFirstLevel: true
+    pinFirstLevel: true,
   });
 
   return { scene, view };
@@ -94,7 +100,7 @@ function criarHotspot(sceneObj, hotspotData) {
   // Criar hotspot usando o Marzipano (posicionamento CORRETO)
   sceneObj.scene.hotspotContainer().createHotspot(el, {
     yaw: hotspotData.yaw,
-    pitch: hotspotData.pitch
+    pitch: hotspotData.pitch,
   });
 
   return el;
@@ -127,7 +133,8 @@ function criarInfoHotspot(sceneObj, hotspotData) {
   icon.style.alignItems = "center";
   icon.style.justifyContent = "center";
   icon.style.fontWeight = "bold";
-  icon.style.fontFamily = "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+  icon.style.fontFamily =
+    "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
   icon.style.boxShadow = "0 0 6px rgba(0,0,0,0.8)";
 
   // label com título + texto
@@ -138,7 +145,8 @@ function criarInfoHotspot(sceneObj, hotspotData) {
   label.style.background = "rgba(35, 35, 35, 0.95)";
   label.style.color = "#fff";
   label.style.fontSize = "13px";
-  label.style.fontFamily = "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+  label.style.fontFamily =
+    "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
   label.style.whiteSpace = "nowrap";
   label.style.maxWidth = "260px";
   label.style.overflow = "hidden";
@@ -158,7 +166,6 @@ function criarInfoHotspot(sceneObj, hotspotData) {
   wrapper.appendChild(icon);
   wrapper.appendChild(label);
 
-  // Interações:
   // desktop → hover; mobile/Quest → click alterna abrir/fechar
   wrapper.addEventListener("mouseenter", () => {
     if (!isMobile && !isMetaQuest) {
@@ -182,7 +189,7 @@ function criarInfoHotspot(sceneObj, hotspotData) {
   // Posicionamento no panorama
   sceneObj.scene.hotspotContainer().createHotspot(wrapper, {
     yaw: hotspotData.yaw,
-    pitch: hotspotData.pitch
+    pitch: hotspotData.pitch,
   });
 
   return wrapper;
@@ -197,7 +204,7 @@ let cenaAtual = null;
 function trocarCena(id) {
   console.log("🔄 Carregando cena:", id);
 
-  const data = SCENES.find(s => s.id === id);
+  const data = SCENES.find((s) => s.id === id);
   if (!data) {
     return console.error("❌ Cena não encontrada:", id);
   }
@@ -212,23 +219,27 @@ function trocarCena(id) {
   cenaAtual = data;
 
   // Remover hotspots visuais antigos (navegação + informação)
-  document.querySelectorAll(".hotspot-container, .info-hotspot").forEach(e => e.remove());
+  document
+    .querySelectorAll(".hotspot-container, .info-hotspot")
+    .forEach((e) => e.remove());
 
   // Criar hotspots de navegação
   if (data.linkHotspots && data.linkHotspots.length > 0) {
-    data.linkHotspots.forEach(h => criarHotspot(cenaObj, h));
+    data.linkHotspots.forEach((h) => criarHotspot(cenaObj, h));
   }
 
   // Criar hotspots de informação (elevadores, portas, empresas, etc.)
   if (data.infoHotspots && data.infoHotspots.length > 0) {
     console.log(`ℹ️ Cena "${id}" possui ${data.infoHotspots.length} infoHotspots.`);
-    data.infoHotspots.forEach(h => criarInfoHotspot(cenaObj, h));
+    data.infoHotspots.forEach((h) => criarInfoHotspot(cenaObj, h));
   } else {
     console.log(`ℹ️ Cena "${id}" não possui infoHotspots.`);
   }
 
   console.log(
-    `✨ Cena "${id}" carregada com ${data.linkHotspots?.length || 0} hotspots de navegação e ${data.infoHotspots?.length || 0} hotspots de informação.`
+    `✨ Cena "${id}" carregada com ${data.linkHotspots?.length || 0} hotspots de navegação e ${
+      data.infoHotspots?.length || 0
+    } hotspots de informação.`
   );
 }
 
@@ -239,23 +250,19 @@ function trocarCena(id) {
 function iniciarTour() {
   initMarzipano();
 
-  if (SCENES.length === 0) {
+  if (!SCENES || SCENES.length === 0) {
     return console.error("❌ Nenhuma cena encontrada em APP_DATA");
   }
 
   trocarCena(SCENES[0].id);
   console.log("🚀 Tour iniciado na cena:", SCENES[0].id);
 
-  // ============================================================
   // 🥽 SUPORTE META QUEST VR
-  // ============================================================
   if (isMetaQuest) {
     inicializarVR();
   }
 
-  // ============================================================
   // 📱 SUPORTE GIROSCÓPIO CELULAR
-  // ============================================================
   if (isMobile) {
     criarBotaoGiroscopio();
   }
@@ -273,28 +280,28 @@ let vrRenderLoop = null;
 function inicializarVR() {
   console.log("🥽 Inicializando WebXR para Meta Quest...");
 
-  // Verificar se WebXR está disponível
   if (!navigator.xr) {
     console.warn("⚠️ WebXR não disponível neste dispositivo");
     return;
   }
 
-  // Verificar suporte a VR imersivo
-  navigator.xr.isSessionSupported("immersive-vr").then((supported) => {
-    if (!supported) {
-      console.warn("⚠️ VR imersivo não suportado");
-      return;
-    }
+  navigator.xr
+    .isSessionSupported("immersive-vr")
+    .then((supported) => {
+      if (!supported) {
+        console.warn("⚠️ VR imersivo não suportado");
+        return;
+      }
 
-    console.log("✅ VR imersivo suportado!");
-    criarBotaoVR();
-  }).catch((err) => {
-    console.error("❌ Erro ao verificar suporte VR:", err);
-  });
+      console.log("✅ VR imersivo suportado!");
+      criarBotaoVR();
+    })
+    .catch((err) => {
+      console.error("❌ Erro ao verificar suporte VR:", err);
+    });
 }
 
 function criarBotaoVR() {
-  // Criar botão VR
   const vrButton = document.createElement("button");
   vrButton.id = "vr-button";
   vrButton.textContent = "🥽 Entrar em VR";
@@ -315,19 +322,19 @@ function criarBotaoVR() {
     touch-action: manipulation;
     user-select: none;
   `;
-  
+
   vrButton.addEventListener("click", async (e) => {
     console.log("🖱️ Botão VR clicado");
     e.preventDefault();
     e.stopPropagation();
-    
+
     if (vrSession) {
       await encerrarVR(vrButton);
     } else {
       await iniciarVR(vrButton);
     }
   });
-  
+
   document.body.appendChild(vrButton);
 }
 
@@ -337,20 +344,18 @@ async function iniciarVR(botao) {
   botao.textContent = "⏳ Carregando...";
 
   try {
-    // 1️⃣ Configuração META QUEST ESPECÍFICA
     const sessionInit = {
       requiredFeatures: ["local-floor"],
-      optionalFeatures: ["bounded-floor", "hand-tracking"]
+      optionalFeatures: ["bounded-floor", "hand-tracking"],
     };
 
     console.log("📋 Solicitando WebXR immersive-vr...", sessionInit);
-    
+
     vrSession = await navigator.xr.requestSession("immersive-vr", sessionInit);
     console.log("✅ Sessão WebXR criada com sucesso");
-    
     vrSessionActive = true;
 
-    // 2️⃣ CRÍTICO: Reference Space (head tracking)
+    // Reference space
     try {
       xrRefSpace = await vrSession.requestReferenceSpace("local-floor");
       console.log("✅ Reference space: local-floor OK");
@@ -360,50 +365,58 @@ async function iniciarVR(botao) {
       console.log("✅ Reference space: viewer (fallback)");
     }
 
-    // 3️⃣ CRÍTICO: Contexto WebGL e XRWebGLLayer
-    console.log("🎨 Obtendo contexto WebGL...");
-    const gl = panoEl.getContext("webgl2") || panoEl.getContext("webgl");
-    if (!gl) {
-      throw new Error("❌ Não foi possível obter contexto WebGL do canvas #pano");
+    // PEGAR O CANVAS INTERNO DO MARZIPANO
+    const marziCanvas = panoEl.querySelector("canvas");
+    if (!marziCanvas) {
+      throw new Error("❌ Canvas interno do Marzipano não encontrado dentro de #pano");
     }
+
+    console.log("🎨 Canvas do Marzipano encontrado:", marziCanvas.width, "x", marziCanvas.height);
+
+    const gl =
+      marziCanvas.getContext("webgl2") ||
+      marziCanvas.getContext("webgl") ||
+      marziCanvas.getContext("experimental-webgl");
+
+    if (!gl) {
+      throw new Error("❌ Não foi possível obter contexto WebGL do canvas do Marzipano");
+    }
+
     console.log("✅ WebGL context obtido:", gl.getParameter(gl.VERSION));
-    console.log(`   Canvas size: ${panoEl.width}x${panoEl.height}`);
-    
-    // 4️⃣ Criar XRWebGLLayer com config adequada para Meta Quest
+
+    // XRWebGLLayer
     let glLayer = null;
     console.log("📦 Criando XRWebGLLayer...");
     try {
-      glLayer = new XRWebGLLayer(vrSession, gl, { 
-        antialias: true,      // Suavização anti-aliasing
-        alpha: true,          // Permite transparência (passthrough)
-        depth: true,          // Depth buffer para 3D
-        stencil: false,       // Não precisa stencil
-        framebufferScaleFactor: 1.0  // Renderizar em resolução nativa
+      glLayer = new XRWebGLLayer(vrSession, gl, {
+        antialias: true,
+        alpha: true,
+        depth: true,
+        stencil: false,
+        framebufferScaleFactor: 1.0,
       });
       console.log("✅ XRWebGLLayer criado com sucesso");
-      console.log(`   📐 Resolução framebuffer: ${glLayer.framebufferWidth}x${glLayer.framebufferHeight}`);
-      console.log(`   🎯 Framebuffer object: ${!!glLayer.framebuffer}`);
+      console.log(
+        `   📐 Resolução framebuffer: ${glLayer.framebufferWidth}x${glLayer.framebufferHeight}`
+      );
     } catch (err) {
       console.error("❌ Falha ao criar XRWebGLLayer:", err);
       throw err;
     }
 
-    // 5️⃣ CRÍTICO: Atualizar renderState com a layer WebXR
+    // RenderState
     console.log("⚙️  Atualizando RenderState...");
     try {
       await vrSession.updateRenderState({ baseLayer: glLayer });
       console.log("✅ RenderState configurado com XRWebGLLayer");
-      console.log(`   ✓ Framebuffer vinculado ao compositor`);
-      console.log(`   ✓ Base layer definida: ${!!vrSession.renderState.baseLayer}`);
     } catch (err) {
       console.error("❌ Falha ao atualizar renderState:", err);
       throw err;
     }
 
-    // 6️⃣ Iniciar loop de renderização VR
-    iniciarRenderLoopVR(vrSession);
+    // Inicia loop de renderização
+    iniciarRenderLoopVR(vrSession, gl, glLayer);
 
-    // 7️⃣ Event listeners
     vrSession.addEventListener("end", () => {
       console.log("ℹ️ Sessão VR encerrada pelo usuário ou sistema");
       vrSessionActive = false;
@@ -411,7 +424,7 @@ async function iniciarVR(botao) {
       xrRefSpace = null;
       botao.textContent = "🥽 Entrar em VR";
       botao.disabled = false;
-      
+
       if (vrRenderLoop) {
         cancelAnimationFrame(vrRenderLoop);
         vrRenderLoop = null;
@@ -434,26 +447,10 @@ async function iniciarVR(botao) {
     botao.textContent = "🚪 Sair de VR";
     botao.disabled = false;
     console.log("✨ VR pronto para renderizar!");
-
   } catch (err) {
     console.error("❌ ERRO ao iniciar VR:", err.name, "-", err.message);
     botao.textContent = "🥽 Entrar em VR";
     botao.disabled = false;
-    
-    // Diagnóstico do erro
-    if (err.name === "NotAllowedError") {
-      console.error("   → Motivo: Permissão negada ou VR bloqueado pelo usuário");
-    } else if (err.name === "NotSupportedError") {
-      console.error("   → Motivo: Dispositivo/navegador não suporta immersive-vr");
-    } else if (err.name === "AbortError") {
-      console.error("   → Motivo: Sessão VR foi abortada antes de iniciar");
-    } else if (err.name === "InvalidStateError") {
-      console.error("   → Motivo: Estado inválido da sessão WebXR");
-    } else {
-      console.error("   → Motivo desconhecido:", err);
-    }
-
-    // Alert para o usuário
     alert(`❌ Erro ao iniciar VR:\n${err.message}`);
   }
 }
@@ -467,11 +464,11 @@ async function encerrarVR(botao) {
       cancelAnimationFrame(vrRenderLoop);
       vrRenderLoop = null;
     }
-    
+
     if (vrSession) {
       await vrSession.end();
     }
-    
+
     vrSessionActive = false;
     botao.textContent = "🥽 Entrar em VR";
     botao.disabled = false;
@@ -481,101 +478,53 @@ async function encerrarVR(botao) {
   }
 }
 
-function iniciarRenderLoopVR(session) {
-  console.log("🎬 Iniciando render loop VR com renderização WebXR otimizada");
-  
+function iniciarRenderLoopVR(session, gl, layer) {
+  console.log("🎬 Iniciando render loop VR com Marzipano");
+
   let frameCount = 0;
-  const gl = panoEl.getContext("webgl2") || panoEl.getContext("webgl");
-  const layer = session.renderState.baseLayer;
-  
+
   if (!layer) {
     console.error("❌ CRÍTICO: XRWebGLLayer não configurado!");
     return;
   }
 
-  console.log(`   📐 Framebuffer size: ${layer.framebufferWidth}x${layer.framebufferHeight}`);
-  console.log(`   🎨 Framebuffer object exists: ${!!layer.framebuffer}`);
-  console.log(`   📦 Canvas original: ${panoEl.width}x${panoEl.height}`);
-
   function onXRFrame(time, frame) {
     try {
       frameCount++;
 
-      // 1️⃣ OBRIGATÓRIO: Vincular framebuffer ANTES de TUDO
       gl.bindFramebuffer(gl.FRAMEBUFFER, layer.framebuffer);
-      
-      // DEBUG: Verificar se framebuffer foi vinculado
-      const isBound = gl.getParameter(gl.FRAMEBUFFER_BINDING) === layer.framebuffer;
-      if (!isBound) {
-        console.error(`❌ ERRO CRÍTICO: Framebuffer NÃO vinculado no frame ${frameCount}`);
-      }
-
-      // 2️⃣ Viewport para o tamanho do framebuffer
       gl.viewport(0, 0, layer.framebufferWidth, layer.framebufferHeight);
-
-      // DEBUG: Verificar viewport
-      const vp = gl.getParameter(gl.VIEWPORT);
-      if (frameCount === 1) {
-        console.log(`   🔍 Viewport: [${vp[0]}, ${vp[1]}, ${vp[2]}, ${vp[3]}]`);
-      }
-
-      // 3️⃣ Limpar canvas
       gl.clearColor(0.0, 0.0, 0.0, 1.0);
       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-      // DEBUG: Verificar framebuffer status
-      const fbStatus = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
-      if (fbStatus !== gl.FRAMEBUFFER_COMPLETE) {
-        console.error(`❌ Framebuffer incompleto (status ${fbStatus}) no frame ${frameCount}`);
-      } else if (frameCount === 1) {
-        console.log(`✅ Framebuffer status: COMPLETE (0x${fbStatus.toString(16)})`);
-      }
-
-      // 4️⃣ Obter a pose e renderizar
       const pose = frame.getViewerPose(xrRefSpace);
+
       if (pose) {
-        if (frameCount === 1) {
-          console.log(`   ✅ Pose obtida: ${pose.views.length} views para renderizar`);
-        }
-        
-        // 5️⃣ RENDERIZAR O MARZIPANO
         try {
           if (viewer) {
             viewer.render();
-            if (frameCount === 1) {
-              console.log(`   ✅ viewer.render() executado com sucesso`);
-            }
           } else {
-            console.warn(`⚠️ Viewer não disponível no frame ${frameCount}`);
             gl.clearColor(0.2, 0.5, 0.2, 1.0);
             gl.clear(gl.COLOR_BUFFER_BIT);
           }
         } catch (renderErr) {
-          console.error(`❌ Erro ao renderizar Marzipano no frame ${frameCount}:`, renderErr);
+          console.error(
+            `❌ Erro ao renderizar Marzipano no frame ${frameCount}:`,
+            renderErr
+          );
         }
       } else {
-        console.warn(`   ⚠️ Pose null no frame ${frameCount}`);
         gl.clearColor(0.5, 0.0, 0.0, 1.0);
         gl.clear(gl.COLOR_BUFFER_BIT);
       }
 
-      // 6️⃣ Solicitação FINAL do próximo frame (MUST BE LAST)
       vrRenderLoop = session.requestAnimationFrame(onXRFrame);
-
-      // Debug logging a cada N frames
-      if (frameCount === 1 || frameCount === 30 || frameCount === 90) {
-        console.log(`📊 Frame ${frameCount} OK: bound=${isBound}, pose=${!!pose}, fbStatus=0x${fbStatus.toString(16)}`);
-      }
-      
     } catch (err) {
       console.error(`❌ ERRO CRÍTICO no frame ${frameCount}:`, err);
-      console.error(`   Mensagem: ${err.message}`);
-      // Continuar tentando renderizar mesmo com erro
       vrRenderLoop = session.requestAnimationFrame(onXRFrame);
     }
   }
 
-  // Iniciar o loop
   console.log("📍 Solicitando primeiro frame XR...");
   vrRenderLoop = session.requestAnimationFrame(onXRFrame);
   console.log("✅ Render loop VR iniciado - aguardando frames do compositor");
@@ -584,8 +533,7 @@ function iniciarRenderLoopVR(session) {
 // Lidar com seleção (clique em hotspots VR)
 function handleVRSelect(event) {
   console.log("🎯 Seleção em VR");
-  
-  // Simular clique em hotspot
+
   const hotspots = document.querySelectorAll(".hotspot-container");
   if (hotspots.length > 0) {
     console.log("✅ Acionando hotspot via VR");
@@ -599,7 +547,6 @@ function handleVRSelect(event) {
 // 6) SUPORTE GIROSCÓPIO PARA CELULAR
 // ============================================================
 
-let deviceOrientationControl = null;
 let gyroscopeEnabled = false;
 let gyroscopeButton = null;
 
@@ -611,8 +558,10 @@ function inicializarGiroscopio() {
 
   console.log("📱 Inicializando suporte a giroscópio...");
 
-  // Solicitar permissão de acesso ao giroscópio (obrigatório em iOS 13+)
-  if (typeof DeviceOrientationEvent !== "undefined" && typeof DeviceOrientationEvent.requestPermission === "function") {
+  if (
+    typeof DeviceOrientationEvent !== "undefined" &&
+    typeof DeviceOrientationEvent.requestPermission === "function"
+  ) {
     console.log("🔐 Solicitando permissão para giroscópio (iOS)...");
     DeviceOrientationEvent.requestPermission()
       .then((permissionState) => {
@@ -625,11 +574,9 @@ function inicializarGiroscopio() {
       })
       .catch((err) => {
         console.warn("⚠️ Erro ao solicitar permissão:", err);
-        // Tentar ativar mesmo sem permissão (Android)
         ativarGiroscopio();
       });
   } else {
-    // Android e navegadores antigos
     console.log("📱 Ativando giroscópio sem permissão (Android/antigos)");
     ativarGiroscopio();
   }
@@ -643,8 +590,7 @@ function ativarGiroscopio() {
 
   try {
     console.log("🎮 Ativando controle por giroscópio...");
-    
-    // Inicializar na visão frontal (reto para frente)
+
     if (cenaAtual && viewer) {
       const view = viewer.view();
       if (view) {
@@ -652,36 +598,32 @@ function ativarGiroscopio() {
         view.setPitch(0);
       }
     }
-    
+
     let calibrationYaw = 0;
     let calibrationPitch = 0;
     let isCalibrated = false;
 
-    // Listener para mudanças de orientação
     const handleDeviceOrientation = (event) => {
       if (!gyroscopeEnabled) return;
 
-      const alpha = event.alpha || 0; // z rotation (0-360) - IGNORAR
-      const beta = event.beta || 0;   // x rotation (-180 to 180) - Pitch
-      const gamma = event.gamma || 0; // y rotation (-90 to 90) - Yaw
+      const beta = event.beta || 0; // x rotation (-180 a 180) - pitch
+      const gamma = event.gamma || 0; // y rotation (-90 a 90) - yaw
 
-      // Calibrar na primeira leitura
       if (!isCalibrated) {
         calibrationYaw = gamma;
         calibrationPitch = beta;
         isCalibrated = true;
-        console.log(`🎯 Giroscópio calibrado: yaw=${calibrationYaw}, pitch=${calibrationPitch}`);
+        console.log(
+          `🎯 Giroscópio calibrado: yaw=${calibrationYaw}, pitch=${calibrationPitch}`
+        );
       }
 
-      // Calcular diferenças a partir da calibração
-      const deltaYaw = gamma - calibrationYaw;      // Movimento esquerda/direita
-      const deltaPitch = calibrationPitch - beta;   // Movimento cima/baixo (invertido)
+      const deltaYaw = gamma - calibrationYaw;
+      const deltaPitch = calibrationPitch - beta;
 
-      // Converter para radianos
       const yaw = THREE.MathUtils.degToRad(deltaYaw);
       const pitch = THREE.MathUtils.degToRad(deltaPitch);
 
-      // Atualizar visão do Marzipano
       try {
         if (cenaAtual && viewer) {
           const view = viewer.view();
@@ -691,19 +633,16 @@ function ativarGiroscopio() {
           }
         }
       } catch (err) {
-        console.warn("⚠️ Erro ao atualizar visão:", err);
+        console.warn("⚠️ Erro ao atualizar visão com giroscópio:", err);
       }
     };
 
-    // Remover listener anterior se existir
     window.removeEventListener("deviceorientation", handleDeviceOrientation);
-    
-    // Adicionar novo listener
     window.addEventListener("deviceorientation", handleDeviceOrientation, false);
 
     console.log("✅ Giroscópio ativado com sucesso");
     gyroscopeEnabled = true;
-    
+
     if (gyroscopeButton) {
       gyroscopeButton.textContent = "📱 Giroscópio ✓";
       gyroscopeButton.style.background = "#4CAF50";
@@ -716,7 +655,7 @@ function ativarGiroscopio() {
 function desativarGiroscopio() {
   console.log("🎮 Desativando giroscópio...");
   gyroscopeEnabled = false;
-  
+
   if (gyroscopeButton) {
     gyroscopeButton.textContent = "📱 Giroscópio";
     gyroscopeButton.style.background = "#2196F3";
@@ -750,7 +689,7 @@ function criarBotaoGiroscopio() {
   gyroscopeButton.addEventListener("click", async (e) => {
     e.preventDefault();
     e.stopPropagation();
-    
+
     if (gyroscopeEnabled) {
       desativarGiroscopio();
     } else {
