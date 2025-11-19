@@ -75,6 +75,7 @@ function criarCena(info) {
 // 2) HOTSPOTS MARZIPANO
 // ============================================================
 
+// ---- Hotspot de NAVEGAÇÃO (seta) ----
 function criarHotspot(sceneObj, hotspotData) {
   const el = document.createElement("div");
   el.className = "hotspot-container";
@@ -97,6 +98,94 @@ function criarHotspot(sceneObj, hotspotData) {
   });
 
   return el;
+}
+
+// ---- Hotspot de INFORMAÇÃO (elevador, porta, empresa etc.) ----
+// Usa apenas dados do data.js (infoHotspots) sem alterar VR / giroscópio.
+function criarInfoHotspot(sceneObj, hotspotData) {
+  if (!hotspotData) return;
+
+  const wrapper = document.createElement("div");
+  wrapper.className = "info-hotspot";
+  wrapper.style.position = "absolute";
+  wrapper.style.transform = "translate(-50%, -50%)";
+  wrapper.style.cursor = "pointer";
+  wrapper.style.zIndex = "999998";
+  wrapper.style.display = "flex";
+  wrapper.style.alignItems = "center";
+  wrapper.style.gap = "8px";
+
+  // bolinha com "i"
+  const icon = document.createElement("div");
+  icon.textContent = "i";
+  icon.style.width = "36px";
+  icon.style.height = "36px";
+  icon.style.borderRadius = "50%";
+  icon.style.background = "rgba(30, 30, 30, 0.9)";
+  icon.style.color = "#fff";
+  icon.style.display = "flex";
+  icon.style.alignItems = "center";
+  icon.style.justifyContent = "center";
+  icon.style.fontWeight = "bold";
+  icon.style.fontFamily = "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+  icon.style.boxShadow = "0 0 6px rgba(0,0,0,0.8)";
+
+  // label com título + texto
+  const label = document.createElement("div");
+  label.className = "info-hotspot-label";
+  label.style.padding = "6px 10px";
+  label.style.borderRadius = "4px";
+  label.style.background = "rgba(35, 35, 35, 0.95)";
+  label.style.color = "#fff";
+  label.style.fontSize = "13px";
+  label.style.fontFamily = "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+  label.style.whiteSpace = "nowrap";
+  label.style.maxWidth = "260px";
+  label.style.overflow = "hidden";
+  label.style.textOverflow = "ellipsis";
+  label.style.display = "none"; // abre só em hover/click
+
+  const title = hotspotData.title || "";
+  const text = hotspotData.text || "";
+  if (title && text) {
+    label.innerHTML = `<strong>${title}</strong><br>${text}`;
+  } else if (title) {
+    label.textContent = title;
+  } else {
+    label.textContent = text;
+  }
+
+  wrapper.appendChild(icon);
+  wrapper.appendChild(label);
+
+  // Interações:
+  // desktop → hover; mobile/Quest → click alterna abrir/fechar
+  wrapper.addEventListener("mouseenter", () => {
+    if (!isMobile && !isMetaQuest) {
+      label.style.display = "block";
+    }
+  });
+  wrapper.addEventListener("mouseleave", () => {
+    if (!isMobile && !isMetaQuest) {
+      label.style.display = "none";
+    }
+  });
+  wrapper.addEventListener("click", (e) => {
+    e.stopPropagation();
+    if (label.style.display === "none") {
+      label.style.display = "block";
+    } else {
+      label.style.display = "none";
+    }
+  });
+
+  // Posicionamento no panorama
+  sceneObj.scene.hotspotContainer().createHotspot(wrapper, {
+    yaw: hotspotData.yaw,
+    pitch: hotspotData.pitch
+  });
+
+  return wrapper;
 }
 
 // ============================================================
@@ -122,15 +211,25 @@ function trocarCena(id) {
   cenaObj.scene.switchTo();
   cenaAtual = data;
 
-  // Remover hotspots visuais antigos
-  document.querySelectorAll(".hotspot-container").forEach(e => e.remove());
+  // Remover hotspots visuais antigos (navegação + informação)
+  document.querySelectorAll(".hotspot-container, .info-hotspot").forEach(e => e.remove());
 
-  // Criar hotspots da nova cena
+  // Criar hotspots de navegação
   if (data.linkHotspots && data.linkHotspots.length > 0) {
     data.linkHotspots.forEach(h => criarHotspot(cenaObj, h));
   }
 
-  console.log(`✨ Cena "${id}" carregada com ${data.linkHotspots?.length || 0} hotspots.`);
+  // Criar hotspots de informação (elevadores, portas, empresas, etc.)
+  if (data.infoHotspots && data.infoHotspots.length > 0) {
+    console.log(`ℹ️ Cena "${id}" possui ${data.infoHotspots.length} infoHotspots.`);
+    data.infoHotspots.forEach(h => criarInfoHotspot(cenaObj, h));
+  } else {
+    console.log(`ℹ️ Cena "${id}" não possui infoHotspots.`);
+  }
+
+  console.log(
+    `✨ Cena "${id}" carregada com ${data.linkHotspots?.length || 0} hotspots de navegação e ${data.infoHotspots?.length || 0} hotspots de informação.`
+  );
 }
 
 // ============================================================
@@ -545,21 +644,42 @@ function ativarGiroscopio() {
   try {
     console.log("🎮 Ativando controle por giroscópio...");
     
-    let lastAlpha = 0;
-    let lastBeta = 0;
-    let lastGamma = 0;
+    // Inicializar na visão frontal (reto para frente)
+    if (cenaAtual && viewer) {
+      const view = viewer.view();
+      if (view) {
+        view.setYaw(0);
+        view.setPitch(0);
+      }
+    }
+    
+    let calibrationYaw = 0;
+    let calibrationPitch = 0;
+    let isCalibrated = false;
 
     // Listener para mudanças de orientação
     const handleDeviceOrientation = (event) => {
       if (!gyroscopeEnabled) return;
 
-      const alpha = (event.alpha || 0) % 360; // z rotation (0-360)
-      const beta = event.beta || 0;           // x rotation (-180 to 180)
-      const gamma = event.gamma || 0;         // y rotation (-90 to 90)
+      const alpha = event.alpha || 0; // z rotation (0-360) - IGNORAR
+      const beta = event.beta || 0;   // x rotation (-180 to 180) - Pitch
+      const gamma = event.gamma || 0; // y rotation (-90 to 90) - Yaw
+
+      // Calibrar na primeira leitura
+      if (!isCalibrated) {
+        calibrationYaw = gamma;
+        calibrationPitch = beta;
+        isCalibrated = true;
+        console.log(`🎯 Giroscópio calibrado: yaw=${calibrationYaw}, pitch=${calibrationPitch}`);
+      }
+
+      // Calcular diferenças a partir da calibração
+      const deltaYaw = gamma - calibrationYaw;      // Movimento esquerda/direita
+      const deltaPitch = calibrationPitch - beta;   // Movimento cima/baixo (invertido)
 
       // Converter para radianos
-      const yaw = THREE.MathUtils.degToRad(alpha);
-      const pitch = THREE.MathUtils.degToRad(-beta); // Inverter pitch
+      const yaw = THREE.MathUtils.degToRad(deltaYaw);
+      const pitch = THREE.MathUtils.degToRad(deltaPitch);
 
       // Atualizar visão do Marzipano
       try {
@@ -573,10 +693,6 @@ function ativarGiroscopio() {
       } catch (err) {
         console.warn("⚠️ Erro ao atualizar visão:", err);
       }
-
-      lastAlpha = alpha;
-      lastBeta = beta;
-      lastGamma = gamma;
     };
 
     // Remover listener anterior se existir

@@ -28,179 +28,22 @@ var APP_DATA = {
       ],
       "faceSize": 4096,
       "initialViewParameters": {
-        "yaw": 0.139334911815304,
-        "pitch": -0.11152903237215206,
-        "fov": 1.304933665046217
+        "yaw": 0.15901630222865393,
+        "pitch": -0.1388016580955771,
+        "fov": 1.5080099416290222
       },
       "linkHotspots": [
         {
-          "yaw": 0.24801502410277187,
-          "pitch": 0.00508774673274992,
-          "rotation": 0,
-          "target": "4-terreo_entrada"
+          "yaw": -0.05977376587323491,
+          "pitch": -0.006892752159215476,
+          "rotation": 6.283185307179586,
+          "target": "1-terreo_entrada"
         }
       ],
       "infoHotspots": []
     },
     {
-      "id": "1-terreo_corredor1",
-      "name": "terreo_corredor1",
-      "levels": [
-        {
-          "tileSize": 256,
-          "size": 256,
-          "fallbackOnly": true
-        },
-        {
-          "tileSize": 512,
-          "size": 512
-        },
-        {
-          "tileSize": 512,
-          "size": 1024
-        },
-        {
-          "tileSize": 512,
-          "size": 2048
-        }
-      ],
-      "faceSize": 2048,
-      "initialViewParameters": {
-        "pitch": 0,
-        "yaw": 0,
-        "fov": 1.5707963267948966
-      },
-      "linkHotspots": [
-        {
-          "yaw": 1.0735606268200542,
-          "pitch": 0.03738691076886269,
-          "rotation": 0,
-          "target": "4-terreo_entrada"
-        },
-        {
-          "yaw": -1.1153978683053865,
-          "pitch": 0.10868417225476534,
-          "rotation": 1.5707963267948966,
-          "target": "2-terreo_corredor2"
-        }
-      ],
-      "infoHotspots": []
-    },
-    {
-      "id": "2-terreo_corredor2",
-      "name": "terreo_corredor2",
-      "levels": [
-        {
-          "tileSize": 256,
-          "size": 256,
-          "fallbackOnly": true
-        },
-        {
-          "tileSize": 512,
-          "size": 512
-        },
-        {
-          "tileSize": 512,
-          "size": 1024
-        },
-        {
-          "tileSize": 512,
-          "size": 2048
-        }
-      ],
-      "faceSize": 2048,
-      "initialViewParameters": {
-        "yaw": -0.33957463809719,
-        "pitch": 0.018769593550754138,
-        "fov": 1.304933665046217
-      },
-      "linkHotspots": [
-        {
-          "yaw": 0.5929105891396542,
-          "pitch": 0.0424899989512042,
-          "rotation": 0,
-          "target": "1-terreo_corredor1"
-        },
-        {
-          "yaw": -0.9132415475924489,
-          "pitch": 0.012539750143877981,
-          "rotation": 0,
-          "target": "5-terreo_salao"
-        }
-      ],
-      "infoHotspots": []
-    },
-    {
-      "id": "3-terreo_elevadores",
-      "name": "terreo_elevadores",
-      "levels": [
-        {
-          "tileSize": 256,
-          "size": 256,
-          "fallbackOnly": true
-        },
-        {
-          "tileSize": 512,
-          "size": 512
-        },
-        {
-          "tileSize": 512,
-          "size": 1024
-        },
-        {
-          "tileSize": 512,
-          "size": 2048
-        }
-      ],
-      "faceSize": 2048,
-      "initialViewParameters": {
-        "pitch": 0,
-        "yaw": 0,
-        "fov": 1.5707963267948966
-      },
-      "linkHotspots": [
-        {
-          "yaw": 0.6192906781599206,
-          "pitch": 0.11086410118181256,
-          "rotation": 1.5707963267948966,
-          "target": "4-terreo_entrada"
-        },
-        {
-          "yaw": -0.544399187359252,
-          "pitch": 0.12670496266287756,
-          "rotation": 4.71238898038469,
-          "target": "1-terreo_corredor1"
-        },
-        {
-          "yaw": 0.2417422605399313,
-          "pitch": 0.06626956663803796,
-          "rotation": 0,
-          "target": "5-terreo_salao"
-        },
-        {
-          "yaw": -1.1393748211895662,
-          "pitch": 0.26623227553930384,
-          "rotation": 0,
-          "target": "11-2andar_entrada"
-        }
-      ],
-      "infoHotspots": [
-        {
-          "yaw": 1.1223982082887503,
-          "pitch": -0.4120452532640684,
-          "title": "Elevador do Primeiro andar",
-          "text": "Elevador utilizado exclusivamente para o primeiro andar"
-        },
-        {
-          "yaw": -1.8837982097018262,
-          "pitch": -0.344615595680672,
-          "title": "Elevador do Segundo andar",
-          "text": "Elevador utilizado exclusivamente ao Segundo andar"
-        }
-      ]
-    },
-    {
-      "id": "4-terreo_entrada",
+      "id": "1-terreo_entrada",
       "name": "terreo_entrada",
       "levels": [
         {
@@ -229,34 +72,122 @@ var APP_DATA = {
       },
       "linkHotspots": [
         {
-          "yaw": -0.22367681620762525,
-          "pitch": 0.039844590852032624,
-          "rotation": 0,
-          "target": "1-terreo_corredor1"
-        },
-        {
-          "yaw": 0.6609768248997749,
-          "pitch": 0.09264028829624138,
-          "rotation": 1.5707963267948966,
-          "target": "5-terreo_salao"
-        },
-        {
-          "yaw": -0.6927287621561504,
-          "pitch": 0.08187682611910674,
-          "rotation": 0,
-          "target": "3-terreo_elevadores"
-        },
-        {
-          "yaw": 2.876320631705182,
-          "pitch": 0.09803303902510763,
+          "yaw": 2.8528014214585706,
+          "pitch": 0.10115989203326237,
           "rotation": 0,
           "target": "0-inicio_tour_tarde"
+        },
+        {
+          "yaw": -0.21915247941042004,
+          "pitch": 0.023904840174237663,
+          "rotation": 0,
+          "target": "2-terreo_corredor1"
+        },
+        {
+          "yaw": -0.5968689157137117,
+          "pitch": 0.05617312341819414,
+          "rotation": 4.71238898038469,
+          "target": "5-terreo_elevadores"
+        },
+        {
+          "yaw": 0.6812745415965971,
+          "pitch": 0.09770119753366302,
+          "rotation": 1.5707963267948966,
+          "target": "4-terreo_salao"
         }
       ],
       "infoHotspots": []
     },
     {
-      "id": "5-terreo_salao",
+      "id": "2-terreo_corredor1",
+      "name": "terreo_corredor1",
+      "levels": [
+        {
+          "tileSize": 256,
+          "size": 256,
+          "fallbackOnly": true
+        },
+        {
+          "tileSize": 512,
+          "size": 512
+        },
+        {
+          "tileSize": 512,
+          "size": 1024
+        },
+        {
+          "tileSize": 512,
+          "size": 2048
+        }
+      ],
+      "faceSize": 2048,
+      "initialViewParameters": {
+        "pitch": 0,
+        "yaw": 0,
+        "fov": 1.5707963267948966
+      },
+      "linkHotspots": [
+        {
+          "yaw": -1.1188109926265675,
+          "pitch": 0.09814404047206793,
+          "rotation": 1.5707963267948966,
+          "target": "3-terreo_corredor2"
+        },
+        {
+          "yaw": 1.0858263467732385,
+          "pitch": 0.014490861097575802,
+          "rotation": 0,
+          "target": "1-terreo_entrada"
+        }
+      ],
+      "infoHotspots": []
+    },
+    {
+      "id": "3-terreo_corredor2",
+      "name": "terreo_corredor2",
+      "levels": [
+        {
+          "tileSize": 256,
+          "size": 256,
+          "fallbackOnly": true
+        },
+        {
+          "tileSize": 512,
+          "size": 512
+        },
+        {
+          "tileSize": 512,
+          "size": 1024
+        },
+        {
+          "tileSize": 512,
+          "size": 2048
+        }
+      ],
+      "faceSize": 2048,
+      "initialViewParameters": {
+        "pitch": 0,
+        "yaw": 0,
+        "fov": 1.5707963267948966
+      },
+      "linkHotspots": [
+        {
+          "yaw": -0.8968904422432473,
+          "pitch": 0.010054294932539065,
+          "rotation": 0,
+          "target": "4-terreo_salao"
+        },
+        {
+          "yaw": 0.5862666264842264,
+          "pitch": 0.028837990669893898,
+          "rotation": 0,
+          "target": "2-terreo_corredor1"
+        }
+      ],
+      "infoHotspots": []
+    },
+    {
+      "id": "4-terreo_salao",
       "name": "terreo_salao",
       "levels": [
         {
@@ -279,29 +210,29 @@ var APP_DATA = {
       ],
       "faceSize": 2048,
       "initialViewParameters": {
-        "yaw": -0.10302647472678927,
-        "pitch": 0.03179853158507129,
-        "fov": 1.304933665046217
+        "pitch": 0,
+        "yaw": 0,
+        "fov": 1.5707963267948966
       },
       "linkHotspots": [
         {
-          "yaw": -0.6710212006368828,
-          "pitch": 0.03263231645916065,
+          "yaw": -0.6827974494585884,
+          "pitch": 0.029875582425795244,
           "rotation": 0,
-          "target": "4-terreo_entrada"
+          "target": "1-terreo_entrada"
         },
         {
-          "yaw": 0.5467844882970567,
-          "pitch": 0.03511967101082725,
+          "yaw": 0.577580625516255,
+          "pitch": 0.02212654798038649,
           "rotation": 0,
-          "target": "2-terreo_corredor2"
+          "target": "3-terreo_corredor2"
         }
       ],
       "infoHotspots": []
     },
     {
-      "id": "6-2andar_corredor_final",
-      "name": "2andar_corredor_final",
+      "id": "5-terreo_elevadores",
+      "name": "terreo_elevadores",
       "levels": [
         {
           "tileSize": 256,
@@ -329,16 +260,487 @@ var APP_DATA = {
       },
       "linkHotspots": [
         {
-          "yaw": -0.0049000819968973985,
-          "pitch": 0.07312228294958167,
+          "yaw": 0.2363793298766499,
+          "pitch": 0.059731437867537096,
           "rotation": 0,
-          "target": "9-2andar_corredor2"
+          "target": "4-terreo_salao"
+        },
+        {
+          "yaw": 0.6592886682627359,
+          "pitch": 0.067513746338971,
+          "rotation": 1.5707963267948966,
+          "target": "1-terreo_entrada"
+        },
+        {
+          "yaw": -0.5537895357504272,
+          "pitch": 0.06724661444832769,
+          "rotation": 4.71238898038469,
+          "target": "2-terreo_corredor1"
+        },
+        {
+          "yaw": 1.9341854332684019,
+          "pitch": 0.3394879166148268,
+          "rotation": 0,
+          "target": "6-1andar_entrada"
+        },
+        {
+          "yaw": -1.1419319137814377,
+          "pitch": 0.2682810777383917,
+          "rotation": 0,
+          "target": "12-2andar_entrada"
+        }
+      ],
+      "infoHotspots": [
+        {
+          "yaw": -1.8369426075422517,
+          "pitch": -0.3402185956991097,
+          "title": "Elevador do Segundo andar",
+          "text": "Elevador dedicado exclusivamente ao Segundo andar"
+        },
+        {
+          "yaw": 1.1339505775681964,
+          "pitch": -0.4069195864463637,
+          "title": "Elevador do Primeiro andar",
+          "text": "Elevador dedicado exclusivamente ao Primeiro andar"
+        }
+      ]
+    },
+    {
+      "id": "6-1andar_entrada",
+      "name": "1andar_entrada",
+      "levels": [
+        {
+          "tileSize": 256,
+          "size": 256,
+          "fallbackOnly": true
+        },
+        {
+          "tileSize": 512,
+          "size": 512
+        },
+        {
+          "tileSize": 512,
+          "size": 1024
+        },
+        {
+          "tileSize": 512,
+          "size": 2048
+        }
+      ],
+      "faceSize": 2048,
+      "initialViewParameters": {
+        "yaw": 0.08376043130135002,
+        "pitch": 0.08374477450799134,
+        "fov": 1.5080099416290222
+      },
+      "linkHotspots": [
+        {
+          "yaw": -1.0682807469146471,
+          "pitch": 0.28188075611771524,
+          "rotation": 0,
+          "target": "12-2andar_entrada"
+        },
+        {
+          "yaw": 2.1189347423023603,
+          "pitch": 0.5721172312469225,
+          "rotation": 3.141592653589793,
+          "target": "5-terreo_elevadores"
+        },
+        {
+          "yaw": 0.44582815484704774,
+          "pitch": 0.08940094908098928,
+          "rotation": 0,
+          "target": "7-1andar_corredor1"
+        },
+        {
+          "yaw": -0.4855683551044514,
+          "pitch": 0.08666011037582066,
+          "rotation": 4.71238898038469,
+          "target": "9-1andar_corredor2"
+        }
+      ],
+      "infoHotspots": [
+        {
+          "yaw": -1.7002708473985422,
+          "pitch": -0.20181541769279576,
+          "title": "Elevador do Segundo andar",
+          "text": "Elevador dedicado exclusivamente ao Segundo andar"
+        },
+        {
+          "yaw": 1.1089363327909592,
+          "pitch": -0.42498208014095695,
+          "title": "Elevador do Térreo",
+          "text": "Elevador dedicado exclusivamente ao Térreo"
+        }
+      ]
+    },
+    {
+      "id": "7-1andar_corredor1",
+      "name": "1andar_corredor1",
+      "levels": [
+        {
+          "tileSize": 256,
+          "size": 256,
+          "fallbackOnly": true
+        },
+        {
+          "tileSize": 512,
+          "size": 512
+        },
+        {
+          "tileSize": 512,
+          "size": 1024
+        },
+        {
+          "tileSize": 512,
+          "size": 2048
+        }
+      ],
+      "faceSize": 2048,
+      "initialViewParameters": {
+        "pitch": 0,
+        "yaw": 0,
+        "fov": 1.5707963267948966
+      },
+      "linkHotspots": [
+        {
+          "yaw": 0.015809791933927286,
+          "pitch": 0.02079507812330661,
+          "rotation": 0,
+          "target": "8-1andar_corredor12"
+        },
+        {
+          "yaw": -1.5118041513462472,
+          "pitch": 0.039321858905713825,
+          "rotation": 0,
+          "target": "9-1andar_corredor2"
+        },
+        {
+          "yaw": -2.065271062255535,
+          "pitch": 0.14680641080846613,
+          "rotation": 4.71238898038469,
+          "target": "6-1andar_entrada"
+        }
+      ],
+      "infoHotspots": [
+        {
+          "yaw": -0.39397126500090884,
+          "pitch": -0.06988311150947268,
+          "title": "Serpro",
+          "text": "@serprobrasil"
+        },
+        {
+          "yaw": 0.39167389928553753,
+          "pitch": -0.1156155414642086,
+          "title": "MultipliCIDADES",
+          "text": "@instituto_multiplicidades"
+        },
+        {
+          "yaw": 0.22823819623939556,
+          "pitch": 0.15640152161984133,
+          "title": "Coti aceleradora",
+          "text": "@cotidianoaceleradora"
+        }
+      ]
+    },
+    {
+      "id": "8-1andar_corredor12",
+      "name": "1andar_corredor1.2",
+      "levels": [
+        {
+          "tileSize": 256,
+          "size": 256,
+          "fallbackOnly": true
+        },
+        {
+          "tileSize": 512,
+          "size": 512
+        },
+        {
+          "tileSize": 512,
+          "size": 1024
+        },
+        {
+          "tileSize": 512,
+          "size": 2048
+        }
+      ],
+      "faceSize": 2048,
+      "initialViewParameters": {
+        "pitch": 0,
+        "yaw": 0,
+        "fov": 1.5707963267948966
+      },
+      "linkHotspots": [
+        {
+          "yaw": -3.1387508016362062,
+          "pitch": 0.05400946646048865,
+          "rotation": 0,
+          "target": "7-1andar_corredor1"
+        }
+      ],
+      "infoHotspots": [
+        {
+          "yaw": 0.3393982708618708,
+          "pitch": 0.2504201366576382,
+          "title": "fapDF",
+          "text": "@fapdfoficial"
+        },
+        {
+          "yaw": 2.594293452202942,
+          "pitch": 0.15829334209179002,
+          "title": "Instituto Hardware BR",
+          "text": "@ihwbr"
+        },
+        {
+          "yaw": -0.23926408184630787,
+          "pitch": -0.15174658282423792,
+          "title": "Jump star incubadora",
+          "text": "@deum.jump"
+        }
+      ]
+    },
+    {
+      "id": "9-1andar_corredor2",
+      "name": "1andar_corredor2",
+      "levels": [
+        {
+          "tileSize": 256,
+          "size": 256,
+          "fallbackOnly": true
+        },
+        {
+          "tileSize": 512,
+          "size": 512
+        },
+        {
+          "tileSize": 512,
+          "size": 1024
+        },
+        {
+          "tileSize": 512,
+          "size": 2048
+        }
+      ],
+      "faceSize": 2048,
+      "initialViewParameters": {
+        "pitch": 0,
+        "yaw": 0,
+        "fov": 1.5707963267948966
+      },
+      "linkHotspots": [
+        {
+          "yaw": 1.5572165435331602,
+          "pitch": 0.05965228561928626,
+          "rotation": 1.5707963267948966,
+          "target": "6-1andar_entrada"
+        },
+        {
+          "yaw": -0.01690529898509041,
+          "pitch": 0.03227627378245401,
+          "rotation": 0,
+          "target": "10-1andar_corredor22"
+        },
+        {
+          "yaw": -1.5812615762561286,
+          "pitch": 0.02469356728408556,
+          "rotation": 0,
+          "target": "11-1andar_final_corredor"
+        }
+      ],
+      "infoHotspots": [
+        {
+          "yaw": -0.5601486127435216,
+          "pitch": 0.23302966822520688,
+          "title": "Projetus",
+          "text": "@projetusorg"
+        },
+        {
+          "yaw": 0.16211131255783506,
+          "pitch": 0.18531794856803963,
+          "title": "Polus Brasil",
+          "text": "@polusbrasil"
+        },
+        {
+          "yaw": -0.44442253927245723,
+          "pitch": -0.07499231469638268,
+          "title": "Leadfy",
+          "text": "@leadfy.me"
+        }
+      ]
+    },
+    {
+      "id": "10-1andar_corredor22",
+      "name": "1andar_corredor2.2",
+      "levels": [
+        {
+          "tileSize": 256,
+          "size": 256,
+          "fallbackOnly": true
+        },
+        {
+          "tileSize": 512,
+          "size": 512
+        },
+        {
+          "tileSize": 512,
+          "size": 1024
+        },
+        {
+          "tileSize": 512,
+          "size": 2048
+        }
+      ],
+      "faceSize": 2048,
+      "initialViewParameters": {
+        "pitch": 0,
+        "yaw": 0,
+        "fov": 1.5707963267948966
+      },
+      "linkHotspots": [
+        {
+          "yaw": -3.122657881411415,
+          "pitch": 0.04434659166408217,
+          "rotation": 0,
+          "target": "9-1andar_corredor2"
+        }
+      ],
+      "infoHotspots": [
+        {
+          "yaw": -0.23382796577208786,
+          "pitch": -0.15675695812336343,
+          "title": "Peptidus Biotech",
+          "text": "@peptidus.biotech"
+        },
+        {
+          "yaw": 0.2762323540171643,
+          "pitch": 0.3157972667918507,
+          "title": "Sebraelab",
+          "text": "@sebraenodf"
+        },
+        {
+          "yaw": -0.5607233955040947,
+          "pitch": 0.08956921386018202,
+          "title": "Hub da indústria DF",
+          "text": "hubdaindustriadf.com.br"
+        },
+        {
+          "yaw": -2.95057433771834,
+          "pitch": 0.17163509446275427,
+          "title": "TS4",
+          "text": "ts4.io"
+        }
+      ]
+    },
+    {
+      "id": "11-1andar_final_corredor",
+      "name": "1andar_final_corredor",
+      "levels": [
+        {
+          "tileSize": 256,
+          "size": 256,
+          "fallbackOnly": true
+        },
+        {
+          "tileSize": 512,
+          "size": 512
+        },
+        {
+          "tileSize": 512,
+          "size": 1024
+        },
+        {
+          "tileSize": 512,
+          "size": 2048
+        }
+      ],
+      "faceSize": 2048,
+      "initialViewParameters": {
+        "yaw": -2.586651796888411,
+        "pitch": 0.10883998543560836,
+        "fov": 1.5080099416290222
+      },
+      "linkHotspots": [
+        {
+          "yaw": 0.03588238789507869,
+          "pitch": 0.06759099557886117,
+          "rotation": 4.71238898038469,
+          "target": "9-1andar_corredor2"
         }
       ],
       "infoHotspots": []
     },
     {
-      "id": "7-2andar_corredor1",
+      "id": "12-2andar_entrada",
+      "name": "2andar_entrada",
+      "levels": [
+        {
+          "tileSize": 256,
+          "size": 256,
+          "fallbackOnly": true
+        },
+        {
+          "tileSize": 512,
+          "size": 512
+        },
+        {
+          "tileSize": 512,
+          "size": 1024
+        },
+        {
+          "tileSize": 512,
+          "size": 2048
+        }
+      ],
+      "faceSize": 2048,
+      "initialViewParameters": {
+        "yaw": 0.060613697736471295,
+        "pitch": 0.11990901148394428,
+        "fov": 1.5080099416290222
+      },
+      "linkHotspots": [
+        {
+          "yaw": 1.9099857409708152,
+          "pitch": 0.35460413915010314,
+          "rotation": 3.141592653589793,
+          "target": "6-1andar_entrada"
+        },
+        {
+          "yaw": -1.001775987155975,
+          "pitch": 0.1784232344384904,
+          "rotation": 3.141592653589793,
+          "target": "5-terreo_elevadores"
+        },
+        {
+          "yaw": 0.4379423388820456,
+          "pitch": 0.09503323220524962,
+          "rotation": 0,
+          "target": "13-2andar_corredor1"
+        },
+        {
+          "yaw": -0.4732861932690966,
+          "pitch": 0.08502611823873885,
+          "rotation": 4.71238898038469,
+          "target": "15-2andar_corredor2"
+        }
+      ],
+      "infoHotspots": [
+        {
+          "yaw": 1.015534772177725,
+          "pitch": -0.5633465879906243,
+          "title": "Elevador do Primeiro andar",
+          "text": "Elevador dedicado exclusivamente ao Primeiro andar"
+        },
+        {
+          "yaw": -1.6372956998585195,
+          "pitch": -0.3432143489699282,
+          "title": "Elevador do Térreo",
+          "text": "Elevador dedicado exclusivamente ao Térreo"
+        }
+      ]
+    },
+    {
+      "id": "13-2andar_corredor1",
       "name": "2andar_corredor1",
       "levels": [
         {
@@ -361,48 +763,48 @@ var APP_DATA = {
       ],
       "faceSize": 2048,
       "initialViewParameters": {
-        "yaw": -0.013525102140311773,
-        "pitch": 0.014766242109098826,
-        "fov": 1.304933665046217
+        "pitch": 0,
+        "yaw": 0,
+        "fov": 1.5707963267948966
       },
       "linkHotspots": [
         {
-          "yaw": 0.026253178226600227,
-          "pitch": 0.06762324156693467,
+          "yaw": 0.020249814698132695,
+          "pitch": 0.03678615030166732,
           "rotation": 0,
-          "target": "8-2andar_corredor1-2"
+          "target": "14-2andar_corredor12"
         },
         {
-          "yaw": -1.5374510846373255,
-          "pitch": 0.02195658292280278,
-          "rotation": 0,
-          "target": "9-2andar_corredor2"
+          "yaw": -2.1244577431411074,
+          "pitch": 0.09428655579197276,
+          "rotation": 4.71238898038469,
+          "target": "12-2andar_entrada"
         },
         {
-          "yaw": -2.557966832549498,
-          "pitch": 0.11788250051217908,
+          "yaw": -1.549358073326509,
+          "pitch": 0.024858817341447903,
           "rotation": 0,
-          "target": "11-2andar_entrada"
+          "target": "15-2andar_corredor2"
         }
       ],
       "infoHotspots": [
         {
-          "yaw": 0.3884210452177861,
-          "pitch": 0.10381383085596774,
-          "title": "anprotec",
-          "text": "<span style=\"font-size: 13px;\">@Anprotec30</span>"
+          "yaw": 0.36462064497142777,
+          "pitch": -0.21804357996525425,
+          "title": "Anprotec",
+          "text": "@anprotec30"
         },
         {
-          "yaw": -0.6929630959672046,
-          "pitch": 0.1437908302947477,
-          "title": "br.ino",
+          "yaw": -0.6536972794265559,
+          "pitch": -0.15572548410260367,
+          "title": "Br.ino",
           "text": "@br.ino_edu"
         }
       ]
     },
     {
-      "id": "8-2andar_corredor1-2",
-      "name": "2andar_corredor1-2",
+      "id": "14-2andar_corredor12",
+      "name": "2andar_corredor1.2",
       "levels": [
         {
           "tileSize": 256,
@@ -424,29 +826,35 @@ var APP_DATA = {
       ],
       "faceSize": 2048,
       "initialViewParameters": {
-        "pitch": 0,
-        "yaw": 0,
-        "fov": 1.5707963267948966
+        "yaw": 0.08767235312343402,
+        "pitch": 0.01108830839432784,
+        "fov": 1.5080099416290222
       },
       "linkHotspots": [
         {
-          "yaw": 0.006406430531882279,
-          "pitch": 0.04838802936830078,
+          "yaw": -3.1398045720063408,
+          "pitch": 0.0443662130898268,
           "rotation": 0,
-          "target": "7-2andar_corredor1"
+          "target": "13-2andar_corredor1"
         }
       ],
       "infoHotspots": [
         {
-          "yaw": 2.800821734041893,
-          "pitch": 0.13874037697052444,
-          "title": "<font color=\"#f5f5f5\" face=\"-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif\"><span style=\"font-size: 14px; white-space-collapse: preserve-breaks;\">ABIPTI</span></font>",
+          "yaw": -0.19431722238899596,
+          "pitch": -0.08631304358112324,
+          "title": "Abipti",
           "text": "@abipti_abipti"
+        },
+        {
+          "yaw": 2.56831042255096,
+          "pitch": -0.12311088203952991,
+          "title": "BioTIC",
+          "text": "@biotic.sa"
         }
       ]
     },
     {
-      "id": "9-2andar_corredor2",
+      "id": "15-2andar_corredor2",
       "name": "2andar_corredor2",
       "levels": [
         {
@@ -475,47 +883,85 @@ var APP_DATA = {
       },
       "linkHotspots": [
         {
-          "yaw": 0.00174014230031716,
-          "pitch": 0.04703195185015119,
+          "yaw": 0.005190505686021751,
+          "pitch": 0.04095475826211903,
           "rotation": 0,
-          "target": "10-2andar_corredor2-2"
+          "target": "17-2andar_corredor2-2"
         },
         {
-          "yaw": 1.572300005945948,
-          "pitch": 0.04345235965113581,
+          "yaw": -1.6014868860476987,
+          "pitch": 0.032776726140291146,
           "rotation": 0,
-          "target": "7-2andar_corredor1"
+          "target": "16-2andar_corredor_final"
         },
         {
-          "yaw": -1.5873851090988556,
-          "pitch": 0.043734765259030084,
-          "rotation": 0,
-          "target": "6-2andar_corredor_final"
+          "yaw": 1.6144520944894385,
+          "pitch": 0.03362048398426154,
+          "rotation": 1.5707963267948966,
+          "target": "12-2andar_entrada"
         }
       ],
       "infoHotspots": [
         {
-          "yaw": 0.3874990602062134,
-          "pitch": 0.18001259902417033,
-          "title": "brino",
+          "yaw": 0.3366543139823506,
+          "pitch": -0.16704177976086498,
+          "title": "Br.ino",
           "text": "@br.ino_edu"
         },
         {
-          "yaw": -0.7330632226372309,
-          "pitch": 0.15988088605014994,
+          "yaw": -0.7949726233988503,
+          "pitch": -0.07461786725803599,
           "title": "Spin engenharia",
           "text": "@spinengenharia"
         },
         {
-          "yaw": -0.24125078856445548,
-          "pitch": -0.07967797761223494,
+          "yaw": 0.17209410707418726,
+          "pitch": 0.13983960690840824,
           "title": "UnDF",
           "text": "@undf.oficial"
         }
       ]
     },
     {
-      "id": "10-2andar_corredor2-2",
+      "id": "16-2andar_corredor_final",
+      "name": "2andar_corredor_final",
+      "levels": [
+        {
+          "tileSize": 256,
+          "size": 256,
+          "fallbackOnly": true
+        },
+        {
+          "tileSize": 512,
+          "size": 512
+        },
+        {
+          "tileSize": 512,
+          "size": 1024
+        },
+        {
+          "tileSize": 512,
+          "size": 2048
+        }
+      ],
+      "faceSize": 2048,
+      "initialViewParameters": {
+        "yaw": 3.0516931571991828,
+        "pitch": 0.12850645908128655,
+        "fov": 1.5080099416290222
+      },
+      "linkHotspots": [
+        {
+          "yaw": -0.003228845367521771,
+          "pitch": 0.04405374177147792,
+          "rotation": 4.71238898038469,
+          "target": "15-2andar_corredor2"
+        }
+      ],
+      "infoHotspots": []
+    },
+    {
+      "id": "17-2andar_corredor2-2",
       "name": "2andar_corredor2-2",
       "levels": [
         {
@@ -538,97 +984,28 @@ var APP_DATA = {
       ],
       "faceSize": 2048,
       "initialViewParameters": {
-        "pitch": 0,
-        "yaw": 0,
-        "fov": 1.5707963267948966
+        "yaw": 1.4205092550280671,
+        "pitch": 0.040205717665546814,
+        "fov": 1.5080099416290222
       },
       "linkHotspots": [
         {
-          "yaw": 2.4352585411517165,
-          "pitch": 0.040160919801659034,
+          "yaw": -0.6129978085696788,
+          "pitch": 0.07964062276199968,
           "rotation": 0,
-          "target": "12-2andar_janelao"
+          "target": "15-2andar_corredor2"
         },
         {
-          "yaw": -0.5882837593353454,
-          "pitch": 0.08316966361907063,
+          "yaw": 2.4094421793359952,
+          "pitch": 0.03077942068968298,
           "rotation": 0,
-          "target": "9-2andar_corredor2"
+          "target": "18-2andar_janelao"
         }
       ],
       "infoHotspots": []
     },
     {
-      "id": "11-2andar_entrada",
-      "name": "2andar_entrada",
-      "levels": [
-        {
-          "tileSize": 256,
-          "size": 256,
-          "fallbackOnly": true
-        },
-        {
-          "tileSize": 512,
-          "size": 512
-        },
-        {
-          "tileSize": 512,
-          "size": 1024
-        },
-        {
-          "tileSize": 512,
-          "size": 2048
-        }
-      ],
-      "faceSize": 2048,
-      "initialViewParameters": {
-        "yaw": 0.036822635525659564,
-        "pitch": 0.10609626685174689,
-        "fov": 1.304933665046217
-      },
-      "linkHotspots": [
-        {
-          "yaw": 0.4208326168486831,
-          "pitch": 0.06125981046817408,
-          "rotation": 0,
-          "target": "7-2andar_corredor1"
-        },
-        {
-          "yaw": -0.5203533756405783,
-          "pitch": 0.09070635501270097,
-          "rotation": 4.71238898038469,
-          "target": "9-2andar_corredor2"
-        },
-        {
-          "yaw": 1.9085886808972115,
-          "pitch": 0.3648145815216566,
-          "rotation": 3.141592653589793,
-          "target": "3-terreo_elevadores"
-        },
-        {
-          "yaw": -1.0090349037202504,
-          "pitch": 0.17360072002386673,
-          "rotation": 3.141592653589793,
-          "target": "3-terreo_elevadores"
-        }
-      ],
-      "infoHotspots": [
-        {
-          "yaw": -1.6571860042211775,
-          "pitch": -0.33083330703237657,
-          "title": "Elevador do Terreo",
-          "text": "Text"
-        },
-        {
-          "yaw": 0.9148878759253378,
-          "pitch": -0.5323007000131437,
-          "title": "Elevador do Primeiro andar",
-          "text": "Text"
-        }
-      ]
-    },
-    {
-      "id": "12-2andar_janelao",
+      "id": "18-2andar_janelao",
       "name": "2andar_janelao",
       "levels": [
         {
@@ -657,16 +1034,16 @@ var APP_DATA = {
       },
       "linkHotspots": [
         {
-          "yaw": 0.6899414975927023,
-          "pitch": 0.012381008166356011,
-          "rotation": 7.853981633974483,
-          "target": "10-2andar_corredor2-2"
+          "yaw": 0.6835779777081594,
+          "pitch": 0.021616463964152288,
+          "rotation": 1.5707963267948966,
+          "target": "17-2andar_corredor2-2"
         }
       ],
       "infoHotspots": []
     }
   ],
-  "name": "BioTIC1",
+  "name": "Tour BioTIC final",
   "settings": {
     "mouseViewMode": "drag",
     "autorotateEnabled": false,
