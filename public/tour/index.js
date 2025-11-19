@@ -296,25 +296,25 @@ function inicializarVR() {
 
 function criarBotaoVR() {
   const vrButton = document.createElement("button");
-  vrButton.id = "vr-button";
-  vrButton.textContent = "🥽 Entrar em VR";
-  vrButton.style.cssText = `
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    padding: 12px 24px;
-    background: #ff6b35;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    z-index: 9999999;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-    touch-action: manipulation;
-    user-select: none;
-  `;
+  // vrButton.id = "vr-button";
+  // vrButton.textContent = "🥽 Entrar em VR";
+  // vrButton.style.cssText = `
+  //   position: fixed;
+  //   bottom: 20px;
+  //   right: 20px;
+  //   padding: 12px 24px;
+  //   background: #ff6b35;
+  //   color: white;
+  //   border: none;
+  //   border-radius: 8px;
+  //   font-size: 16px;
+  //   font-weight: bold;
+  //   cursor: pointer;
+  //   z-index: 9999999;
+  //   box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  //   touch-action: manipulation;
+  //   user-select: none;
+  // `;
 
   vrButton.addEventListener("click", async (e) => {
     console.log("🖱️ Botão VR clicado");
