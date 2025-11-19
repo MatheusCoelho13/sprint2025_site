@@ -107,7 +107,6 @@ function criarHotspot(sceneObj, hotspotData) {
 }
 
 // ---- Hotspot de INFORMAÇÃO (elevador, porta, empresa etc.) ----
-// Usa apenas dados do data.js (infoHotspots) sem alterar VR / giroscópio.
 function criarInfoHotspot(sceneObj, hotspotData) {
   if (!hotspotData) return;
 
@@ -121,7 +120,6 @@ function criarInfoHotspot(sceneObj, hotspotData) {
   wrapper.style.alignItems = "center";
   wrapper.style.gap = "8px";
 
-  // bolinha com "i"
   const icon = document.createElement("div");
   icon.textContent = "i";
   icon.style.width = "36px";
@@ -137,7 +135,6 @@ function criarInfoHotspot(sceneObj, hotspotData) {
     "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
   icon.style.boxShadow = "0 0 6px rgba(0,0,0,0.8)";
 
-  // label com título + texto
   const label = document.createElement("div");
   label.className = "info-hotspot-label";
   label.style.padding = "6px 10px";
@@ -179,11 +176,7 @@ function criarInfoHotspot(sceneObj, hotspotData) {
   });
   wrapper.addEventListener("click", (e) => {
     e.stopPropagation();
-    if (label.style.display === "none") {
-      label.style.display = "block";
-    } else {
-      label.style.display = "none";
-    }
+    label.style.display = label.style.display === "none" ? "block" : "none";
   });
 
   // Posicionamento no panorama
@@ -371,7 +364,12 @@ async function iniciarVR(botao) {
       throw new Error("❌ Canvas interno do Marzipano não encontrado dentro de #pano");
     }
 
-    console.log("🎨 Canvas do Marzipano encontrado:", marziCanvas.width, "x", marziCanvas.height);
+    console.log(
+      "🎨 Canvas do Marzipano encontrado:",
+      marziCanvas.width,
+      "x",
+      marziCanvas.height
+    );
 
     const gl =
       marziCanvas.getContext("webgl2") ||
@@ -383,6 +381,15 @@ async function iniciarVR(botao) {
     }
 
     console.log("✅ WebGL context obtido:", gl.getParameter(gl.VERSION));
+
+    // 🔴 PASSO CRÍTICO: marcar contexto como XR-compatible
+    if (gl.makeXRCompatible) {
+      console.log("🔧 Chamando gl.makeXRCompatible()...");
+      await gl.makeXRCompatible();
+      console.log("✅ Contexto WebGL marcado como XR-compatible");
+    } else {
+      console.log("ℹ️ gl.makeXRCompatible não disponível, seguindo assim mesmo");
+    }
 
     // XRWebGLLayer
     let glLayer = null;
